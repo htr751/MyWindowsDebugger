@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DebugEvent.cpp" />
+    <ClCompile Include="DebugEventController.cpp" />
     <ClCompile Include="FileHandle.cpp" />
     <ClCompile Include="MyWindowsDebugger.cpp" />
     <ClCompile Include="ProcessInfo.cpp" />

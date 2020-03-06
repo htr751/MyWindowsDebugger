@@ -15,9 +15,13 @@ public:
 	DebugEvent() = default;
 	DebugEvent(const DEBUG_EVENT& event) noexcept;
 	DebugEvent& operator=(const DebugEvent& other) noexcept;
+	DebugEvent& operator=(const DEBUG_EVENT& other) noexcept;
 
 	template<typename... Handlers>
 	void HandleDebugEvent(const overload<Handlers...>& handlers) const noexcept;
+
+	DWORD getProcessID()const noexcept;
+	DWORD getThreadID() const noexcept;
 
 	~DebugEvent() = default;
 

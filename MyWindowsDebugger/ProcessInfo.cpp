@@ -10,14 +10,8 @@ ProcessInfo::ProcessInfo(const std::wstring& AbsolutePathToExe) {
 	ZeroMemory(&this->processInfo, sizeof(this->processInfo));
 
 	bool result = CreateProcess(AbsolutePathToExe.c_str(), NULL, NULL, NULL, NULL, DEBUG_ONLY_THIS_PROCESS, NULL, NULL, &this->processStartUpInfo, &this->processInfo);
-	if (!result) {
-		auto errorMessage = GetLastErrorMessage();
-		if (errorMessage.has_value())
-			throw std::logic_error((const char*)errorMessage.value().c_str());
-		else
-			throw std::logic_error("unknown type of exception");
-
-	}
+	if (!result)
+		CreateLogicError(GetLastErrorMessage());
 }
 
 void UnitTestingForProcessInfo() {

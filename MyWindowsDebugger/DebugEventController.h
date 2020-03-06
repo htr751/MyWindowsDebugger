@@ -1,15 +1,16 @@
 #pragma once
 #include<Windows.h>
 #include"overload.h"
+#include"DebugEvent.h"
 
 class DebugEventController {
-	DEBUG_EVENT event;
+	DebugEvent event;
 public:
-	DebugEventController()noexcept;
-	void WaitForDebugEvent() const noexcept;
+	DebugEventController()noexcept = default;
+	void WaitForDebugEvent();
 
-	template<typename... Funcs>
-	void ProcessDebugEvent(overload<Funcs...> handlingFunctions) const noexcept;
+	template<typename... Handlers>
+	void ProcessDebugEvent(overload<Handlers...> handlingFunctions) const noexcept;
 
 	void ContinueDebugee() const noexcept;
 };

@@ -12,6 +12,19 @@ DebugEvent& DebugEvent::operator=(const DebugEvent& event)noexcept {
 	return *this;
 }
 
+DebugEvent& DebugEvent::operator=(const DEBUG_EVENT& event)noexcept {
+	this->CreateDebugEvent(event);
+	return *this;
+}
+
+DWORD DebugEvent::getProcessID() const noexcept {
+	return this->processId;
+}
+
+DWORD DebugEvent::getThreadID() const noexcept {
+	return this->threadId;
+}
+
 template<typename... Handlers>
 void DebugEvent::HandleDebugEvent(const overload<Handlers...>& handlers) const noexcept {
 	std::visit(handlers, this->eventInfo);

@@ -17,7 +17,15 @@ int main(int argc, char** argv)
         try {
             debugLoopEventController.WaitForDebugEvent();
             debugLoopEventController.ProcessDebugEvent(overload{
-                    [&processInformation](const OUTPUT_DEBUG_STRING_INFO& event) {OutputDebugStringEventHandler(event, processInformation); }
+                    [&processInformation](const OUTPUT_DEBUG_STRING_INFO& event) {OutputDebugStringEventHandler(event, processInformation); },
+                    [](const CREATE_PROCESS_DEBUG_INFO& event) {CreateProcessEventHandler(event); }, 
+                    [](const CREATE_THREAD_DEBUG_INFO& event) {}, 
+                    [](const EXIT_THREAD_DEBUG_INFO& event) {}, 
+                    [](const EXIT_PROCESS_DEBUG_INFO& event) {},
+                    [](const EXCEPTION_DEBUG_INFO& event) {}, 
+                    [](const LOAD_DLL_DEBUG_INFO& event) {},
+                    [](const UNLOAD_DLL_DEBUG_INFO& event) {},
+                    [](const RIP_INFO& event) {}
                 });
             debugLoopEventController.ContinueDebugee();
         }

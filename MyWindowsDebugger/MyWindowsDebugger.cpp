@@ -3,9 +3,10 @@
 #include<memory>
 #include<Windows.h>
 #include"FileHandle.h"
+#include"ProcessInfo.h"
 
 int main(int argc, char** argv)
 {
-    UnitTestingForFileHandle();
+    UnitTestingForProcessInfo();
     return 0;
 }

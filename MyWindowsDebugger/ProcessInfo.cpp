@@ -1,0 +1,34 @@
+#include"ProcessInfo.h"
+#include"windowsUtillities.h"
+#include<thread>
+#include<iostream>
+#include<ctime>
+
+ProcessInfo::ProcessInfo(const std::wstring& AbsolutePathToExe) {
+	ZeroMemory(&this->processStartUpInfo, sizeof(this->processStartUpInfo));
+	this->processStartUpInfo.cb = sizeof(this->processStartUpInfo);
+	ZeroMemory(&this->processInfo, sizeof(this->processInfo));
+
+	bool result = CreateProcess(AbsolutePathToExe.c_str(), NULL, NULL, NULL, NULL, DEBUG_ONLY_THIS_PROCESS, NULL, NULL, &this->processStartUpInfo, &this->processInfo);
+	if (!result) {
+		auto errorMessage = GetLastErrorMessage();
+		if (errorMessage.has_value())
+			throw std::logic_error((const char*)errorMessage.value().c_str());
+		else
+			throw std::logic_error("unknown type of exception");
+
+	}
+}
+
+void UnitTestingForProcessInfo() {
+	try {
+		ProcessInfo pInfo{ L"C:\\Users\\htr751\\Documents\\C++ Projects\\Exception Handling\\Debug\\Exception Handling.exe" };
+		std::cout << pInfo.processInfo.dwProcessId << std::endl;
+
+		std::cout << "please press some button when you are ready to continue" << std::endl;
+		std::cin.ignore();
+	}
+	catch (std::exception& err) {
+		std::wcout << (const wchar_t*)err.what() << std::endl;
+	}
+}

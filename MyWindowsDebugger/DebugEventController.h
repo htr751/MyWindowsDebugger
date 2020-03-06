@@ -10,7 +10,9 @@ public:
 	void WaitForDebugEvent();
 
 	template<typename... Handlers>
-	void ProcessDebugEvent(overload<Handlers...> handlingFunctions) const noexcept;
+	void ProcessDebugEvent(overload<Handlers...> handlingFunctions) const noexcept {
+		this->event.HandleDebugEvent(handlingFunctions);
+	}
 
 	void ContinueDebugee() const noexcept;
 };

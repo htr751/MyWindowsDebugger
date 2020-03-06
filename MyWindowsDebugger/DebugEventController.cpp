@@ -7,18 +7,13 @@ void DebugEventController::WaitForDebugEvent(){
 	bool err = WaitForDebugEventEx(&event, INFINITE);
 
 	if (!err)
-		CreateRunTimeError(GetLastErrorMessage());
+		CreateRunTimeError(GetLastErrorMessage(), std::wstring(L"unknown error type"));
 
 	this->event = event;
-}
-
-template<typename... Handlers>
-void DebugEventController::ProcessDebugEvent(overload<Handlers...> handlingFunctions) const noexcept {
-	this->event.HandleDebugEvent(handlingFunctions);
 }
 
 void DebugEventController::ContinueDebugee() const noexcept {
 	bool err = ContinueDebugEvent(this->event.getProcessID(), this->event.getThreadID(), DBG_CONTINUE);
 	if (!err)
-		CreateRunTimeError(GetLastErrorMessage());
+		CreateRunTimeError(GetLastErrorMessage(), std::wstring(L"unknown error type"));
 }

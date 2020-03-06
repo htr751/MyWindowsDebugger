@@ -2,11 +2,14 @@
 #include<string>
 #include<Windows.h>
 #include<optional>
-
+#include<stdexcept>
+#include<iostream>
+#include"wLogicException.h"
+#include"wRunTimeException.h"
 std::optional<std::wstring> GetLastErrorMessage()noexcept;
 
-template<typename String>
-void CreateRunTimeError(const std::optional<String>& message); //throws runtimeError with message as its message
+//throws runtime error  with message as its message
+void CreateRunTimeError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage);
 
-template<typename String>
-void CreateLogicError(const std::optional<String>& message); //throws logicEror  with message as its message
+//throws logic error with message as its message
+void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage);

@@ -25,12 +25,6 @@ DWORD DebugEvent::getThreadID() const noexcept {
 	return this->threadId;
 }
 
-template<typename... Handlers>
-void DebugEvent::HandleDebugEvent(const overload<Handlers...>& handlers) const noexcept {
-	std::visit(handlers, this->eventInfo);
-}
-
-
 void DebugEvent::CreateDebugEvent(const DEBUG_EVENT& event) noexcept {
 	this->debugEventCode = event.dwDebugEventCode;
 	this->processId = event.dwProcessId;

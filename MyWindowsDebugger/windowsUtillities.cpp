@@ -1,5 +1,4 @@
 #include"windowsUtillities.h"
-#include<stdexcept>
 
 std::optional<std::wstring> GetLastErrorMessage()noexcept {
 	DWORD errorMessageId = GetLastError();
@@ -15,18 +14,19 @@ std::optional<std::wstring> GetLastErrorMessage()noexcept {
 	return message;
 }
 
-template<typename String>
-void CreateRunTimeError(const std::optional<String>& optionalMessage, const String& alternativeMessage) {
-	if (message.has_value())
-		throw std::runtime_error((const char*)optionalMessage.value().c_str());
+//throws runtime error  with message as its message
+void CreateRunTimeError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage) {
+	if (optionalMessage.has_value())
+		throw wRunTimeException(optionalMessage.value());
 	else
-		throw std::runtime_error((const char*)alternativeMessage.c_str());
+		throw wRunTimeException(alternativeMessage);
+		
 }
 
-template<typename String>
-void CreateLogicError(const std::optional<String>& optionalMessage, const String& alternativeMessage) {
-	if (message.has_value())
-		throw std::logic_error((const char*)optionalMessage.value().c_str());
+//throws logic error with message as its message
+void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage) {
+	if (optionalMessage.has_value())
+		throw wLogicException(optionalMessage.value());
 	else
-		throw std::logic_error((const char*)alternativeMessage.c_str());
+		throw wLogicException(alternativeMessage);
 }

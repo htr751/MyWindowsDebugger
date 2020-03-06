@@ -33,6 +33,15 @@
     <ClCompile Include="DebugEventController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wRunTimeException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wLogicException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileHandle.h">
@@ -51,6 +60,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DebugEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wRunTimeException.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wLogicException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

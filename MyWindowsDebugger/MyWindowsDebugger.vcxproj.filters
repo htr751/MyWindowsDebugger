@@ -38,5 +38,11 @@
     <ClInclude Include="windowsUtillities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DebugEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="overload.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 #include"windowsUtillities.h"
 
-std::optional<std::wstring> GetLastErrorMessage() {
+std::optional<std::wstring> GetLastErrorMessage()noexcept {
 	DWORD errorMessageId = GetLastError();
 	if (errorMessageId == 0)
 		return {};

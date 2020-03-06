@@ -157,7 +157,9 @@
     <ClCompile Include="windowsUtillities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DebugEvent.h" />
     <ClInclude Include="FileHandle.h" />
+    <ClInclude Include="overload.h" />
     <ClInclude Include="ProcessInfo.h" />
     <ClInclude Include="windowsUtillities.h" />
   </ItemGroup>

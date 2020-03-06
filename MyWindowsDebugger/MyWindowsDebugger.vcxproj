@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="DebugEvent.cpp" />
     <ClCompile Include="DebugEventController.cpp" />
+    <ClCompile Include="DebuggerEventHandlingMethods.cpp" />
     <ClCompile Include="FileHandle.cpp" />
     <ClCompile Include="MyWindowsDebugger.cpp" />
     <ClCompile Include="ProcessInfo.cpp" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="DebugEvent.h" />
     <ClInclude Include="DebugEventController.h" />
+    <ClInclude Include="DebuggerEventHandlingMethods.h" />
     <ClInclude Include="FileHandle.h" />
     <ClInclude Include="overload.h" />
     <ClInclude Include="ProcessInfo.h" />

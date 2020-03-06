@@ -7,6 +7,7 @@
 #include"DebugEventController.h"
 #include"wLogicException.h"
 #include"wRunTimeException.h"
+#include"DebuggerEventHandlingMethods.h"
 
 int main(int argc, char** argv)
 {
@@ -16,7 +17,7 @@ int main(int argc, char** argv)
         try {
             debugLoopEventController.WaitForDebugEvent();
             debugLoopEventController.ProcessDebugEvent(overload{
-                    [](auto&& value) {std::cout << "hello world from debugger" << std::endl; }
+                    [&processInformation](const OUTPUT_DEBUG_STRING_INFO& event) {OutputDebugStringEventHandler(event, processInformation); }
                 });
             debugLoopEventController.ContinueDebugee();
         }

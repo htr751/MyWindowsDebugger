@@ -27,6 +27,9 @@
     <ClCompile Include="windowsUtillities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DebugEvent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileHandle.h">
@@ -38,10 +41,13 @@
     <ClInclude Include="windowsUtillities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DebugEvent.h">
+    <ClInclude Include="overload.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="overload.h">
+    <ClInclude Include="DebugEventController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

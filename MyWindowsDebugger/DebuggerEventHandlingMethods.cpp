@@ -53,3 +53,14 @@ void UnLoadDllDebugEventHandler(const UNLOAD_DLL_DEBUG_INFO& event, std::unorder
 void ExitProcessDebugEventHandler(const EXIT_PROCESS_DEBUG_INFO& event) {
 	std::wcout << "the debugee process has exited with code " << std::hex << event.dwExitCode << std::endl;
 }
+
+void ExceptionDebugEventHandler(const EXCEPTION_DEBUG_INFO& event, DWORD& continueStatus) {
+	if (event.ExceptionRecord.ExceptionCode == STATUS_BREAKPOINT) {
+		std::wcout << "break point exception accourd " << std::endl;
+		continueStatus = DBG_CONTINUE;
+	}
+	else {
+		std::wcout << "first chance exception accourd, exception code is: " << event.ExceptionRecord.ExceptionCode << std::endl;
+		continueStatus = DBG_EXCEPTION_NOT_HANDLED;
+	}
+}

@@ -11,7 +11,7 @@ ProcessInfo::ProcessInfo(const std::wstring& AbsolutePathToExe) {
 
 	bool result = CreateProcess(AbsolutePathToExe.c_str(), NULL, NULL, NULL, FALSE, DEBUG_ONLY_THIS_PROCESS | CREATE_NEW_CONSOLE, NULL, NULL, &this->processStartUpInfo, &this->processInfo);
 	if (!result)
-		CreateLogicError(GetLastErrorMessage(), std::wstring(L"unknown error type"));
+		CreateLogicError(GetLastErrorMessage());
 }
 
 void UnitTestingForProcessInfo() {

@@ -19,6 +19,7 @@ int main(int argc, char** argv)
     std::unordered_map<PointerToBaseOfDLL_t, std::wstring> baseOfDLLToNameMap;
 
     bool continueDebugging = true;
+    DWORD continueStatus = DBG_CONTINUE;
     while (continueDebugging) {
         try {
             debugLoopEventController.WaitForDebugEvent();
@@ -28,12 +29,12 @@ int main(int argc, char** argv)
                     [&threadIDtoInfoMap](const CREATE_THREAD_DEBUG_INFO& event) {CreateThreadDebugEventHandler(event, threadIDtoInfoMap); },
                     [&debugLoopEventController](const EXIT_THREAD_DEBUG_INFO& event) {ExitThreadDebugEventHandler(event, debugLoopEventController.GetCurrentThreadID()); },
                     [&continueDebugging](const EXIT_PROCESS_DEBUG_INFO& event) {ExitProcessDebugEventHandler(event); continueDebugging = false; },
-                    [](const EXCEPTION_DEBUG_INFO& event) {}, 
+                    [&continueStatus](const EXCEPTION_DEBUG_INFO& event) {ExceptionDebugEventHandler(event, continueStatus); },
                     [&baseOfDLLToNameMap](const LOAD_DLL_DEBUG_INFO& event) {DllLoadDebugEventHandler(event, baseOfDLLToNameMap); },
                     [&baseOfDLLToNameMap](const UNLOAD_DLL_DEBUG_INFO& event) {UnLoadDllDebugEventHandler(event, baseOfDLLToNameMap); },
                     [](const RIP_INFO& event) {}
                 });
-            debugLoopEventController.ContinueDebugee();
+            debugLoopEventController.ContinueDebugee(continueStatus);
         }
         catch (const wRunTimeException& err) {
             std::wcout << err.what() << std::endl;

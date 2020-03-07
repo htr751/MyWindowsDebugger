@@ -15,7 +15,7 @@ using PointerToBaseOfDLL_t = LPVOID;
 std::optional<std::wstring> GetLastErrorMessage()noexcept;
 
 //throws runtime error  with message as its message
-void CreateRunTimeError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage);
+void CreateRunTimeError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage = std::wstring(L"unknown error type"));
 
 //throws logic error with message as its message
-void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage);
+void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage = std::wstring(L"unknown error type"));

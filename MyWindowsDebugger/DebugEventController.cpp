@@ -7,15 +7,18 @@ void DebugEventController::WaitForDebugEvent(){
 	bool err = WaitForDebugEventEx(&event, INFINITE);
 
 	if (!err)
-		CreateRunTimeError(GetLastErrorMessage(), std::wstring(L"unknown error type"));
+		CreateRunTimeError(GetLastErrorMessage());
 
 	this->event = event;
 }
 
-void DebugEventController::ContinueDebugee() const noexcept {
-	bool err = ContinueDebugEvent(this->event.getProcessID(), this->event.getThreadID(), DBG_CONTINUE);
+void DebugEventController::ContinueDebugee(DWORD continueStatus) const noexcept {
+	if (continueStatus != DBG_CONTINUE && continueStatus != DBG_EXCEPTION_NOT_HANDLED)
+		CreateLogicError(L"continue status parameter is invalid");
+
+	bool err = ContinueDebugEvent(this->event.getProcessID(), this->event.getThreadID(), continueStatus);
 	if (!err)
-		CreateRunTimeError(GetLastErrorMessage(), std::wstring(L"unknown error type"));
+		CreateRunTimeError(GetLastErrorMessage());
 }
 
 ThreadID_t DebugEventController::GetCurrentThreadID() const noexcept {

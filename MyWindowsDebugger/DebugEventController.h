@@ -15,7 +15,7 @@ public:
 		this->event.HandleDebugEvent(handlingFunctions);
 	}
 
-	void ContinueDebugee() const noexcept;
+	void ContinueDebugee(DWORD continueStatus) const noexcept;
 	ThreadID_t GetCurrentThreadID() const noexcept;
 	ProcessID_t GetCurrentProcessID() const noexcept;
 };

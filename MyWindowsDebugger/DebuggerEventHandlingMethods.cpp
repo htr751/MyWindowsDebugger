@@ -27,3 +27,9 @@ void CreateProcessEventHandler(const CREATE_PROCESS_DEBUG_INFO& event) {
 	std::wcout << "thread id: " << GetThreadId(event.hThread) << std::endl;
 	std::wcout << "process executable name is: " << m_fileHandle.getFullFileName() << std::endl;
 }
+
+void CreateThreadDebugEventHandler(const CREATE_THREAD_DEBUG_INFO& event, std::unordered_map<ThreadID_t, ThreadInfo_t>& threadIDtoInfoMap) {
+	ThreadID_t threadID = GetThreadId(event.hThread);
+	std::wcout << "Thread " << event.hThread << " (Thread ID: " << threadID << ") created at " << std::hex << event.lpStartAddress << std::endl;
+	threadIDtoInfoMap[threadID] = event;
+}

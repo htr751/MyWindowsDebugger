@@ -1,6 +1,9 @@
 #pragma once
 #include<Windows.h>
 #include"ProcessInfo.h"
+#include"windowsUtillities.h"
+#include<unordered_map>
 
 void OutputDebugStringEventHandler(const OUTPUT_DEBUG_STRING_INFO& event, const ProcessInfo& processInfo);
 void CreateProcessEventHandler(const CREATE_PROCESS_DEBUG_INFO& event);
+void CreateThreadDebugEventHandler(const CREATE_THREAD_DEBUG_INFO& event, std::unordered_map<ThreadID_t, ThreadInfo_t>& threadIDtoInfoMap);

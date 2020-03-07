@@ -9,7 +9,7 @@ ProcessInfo::ProcessInfo(const std::wstring& AbsolutePathToExe) {
 	this->processStartUpInfo.cb = sizeof(this->processStartUpInfo);
 	ZeroMemory(&this->processInfo, sizeof(this->processInfo));
 
-	bool result = CreateProcess(AbsolutePathToExe.c_str(), NULL, NULL, NULL, NULL, DEBUG_ONLY_THIS_PROCESS, NULL, NULL, &this->processStartUpInfo, &this->processInfo);
+	bool result = CreateProcess(AbsolutePathToExe.c_str(), NULL, NULL, NULL, FALSE, DEBUG_ONLY_THIS_PROCESS | CREATE_NEW_CONSOLE, NULL, NULL, &this->processStartUpInfo, &this->processInfo);
 	if (!result)
 		CreateLogicError(GetLastErrorMessage(), std::wstring(L"unknown error type"));
 }

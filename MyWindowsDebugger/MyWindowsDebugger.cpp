@@ -17,7 +17,9 @@ int main(int argc, char** argv)
     DebugEventController debugLoopEventController;
     std::unordered_map<ThreadID_t, ThreadInfo_t> threadIDtoInfoMap;
     std::unordered_map<PointerToBaseOfDLL_t, std::wstring> baseOfDLLToNameMap;
-    while (true) {
+
+    bool continueDebugging = true;
+    while (continueDebugging) {
         try {
             debugLoopEventController.WaitForDebugEvent();
             debugLoopEventController.ProcessDebugEvent(overload{
@@ -25,7 +27,7 @@ int main(int argc, char** argv)
                     [](const CREATE_PROCESS_DEBUG_INFO& event) {CreateProcessEventHandler(event); }, 
                     [&threadIDtoInfoMap](const CREATE_THREAD_DEBUG_INFO& event) {CreateThreadDebugEventHandler(event, threadIDtoInfoMap); },
                     [&debugLoopEventController](const EXIT_THREAD_DEBUG_INFO& event) {ExitThreadDebugEventHandler(event, debugLoopEventController.GetCurrentThreadID()); },
-                    [](const EXIT_PROCESS_DEBUG_INFO& event) {},
+                    [&continueDebugging](const EXIT_PROCESS_DEBUG_INFO& event) {ExitProcessDebugEventHandler(event); continueDebugging = false; },
                     [](const EXCEPTION_DEBUG_INFO& event) {}, 
                     [&baseOfDLLToNameMap](const LOAD_DLL_DEBUG_INFO& event) {DllLoadDebugEventHandler(event, baseOfDLLToNameMap); },
                     [&baseOfDLLToNameMap](const UNLOAD_DLL_DEBUG_INFO& event) {UnLoadDllDebugEventHandler(event, baseOfDLLToNameMap); },

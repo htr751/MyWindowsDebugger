@@ -49,3 +49,7 @@ void DllLoadDebugEventHandler(const LOAD_DLL_DEBUG_INFO& event, std::unordered_m
 void UnLoadDllDebugEventHandler(const UNLOAD_DLL_DEBUG_INFO& event, std::unordered_map<PointerToBaseOfDLL_t, std::wstring>& baseOfDllToNameMap) {
 	std::wcout << "dll " << baseOfDllToNameMap[event.lpBaseOfDll] << " unloaded" << std::endl;
 }
+
+void ExitProcessDebugEventHandler(const EXIT_PROCESS_DEBUG_INFO& event) {
+	std::wcout << "the debugee process has exited with code " << std::hex << event.dwExitCode << std::endl;
+}

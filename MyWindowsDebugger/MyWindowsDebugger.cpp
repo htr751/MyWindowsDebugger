@@ -28,7 +28,7 @@ int main(int argc, char** argv)
                     [](const EXIT_PROCESS_DEBUG_INFO& event) {},
                     [](const EXCEPTION_DEBUG_INFO& event) {}, 
                     [&baseOfDLLToNameMap](const LOAD_DLL_DEBUG_INFO& event) {DllLoadDebugEventHandler(event, baseOfDLLToNameMap); },
-                    [](const UNLOAD_DLL_DEBUG_INFO& event) {},
+                    [&baseOfDLLToNameMap](const UNLOAD_DLL_DEBUG_INFO& event) {UnLoadDllDebugEventHandler(event, baseOfDLLToNameMap); },
                     [](const RIP_INFO& event) {}
                 });
             debugLoopEventController.ContinueDebugee();

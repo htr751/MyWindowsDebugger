@@ -45,3 +45,7 @@ void DllLoadDebugEventHandler(const LOAD_DLL_DEBUG_INFO& event, std::unordered_m
 	baseOfDLLToNameMap[event.lpBaseOfDll] = dllName;
 	std::wcout << "dll " << dllName << " loaded at " << event.lpBaseOfDll << std::endl;
 }
+
+void UnLoadDllDebugEventHandler(const UNLOAD_DLL_DEBUG_INFO& event, std::unordered_map<PointerToBaseOfDLL_t, std::wstring>& baseOfDllToNameMap) {
+	std::wcout << "dll " << baseOfDllToNameMap[event.lpBaseOfDll] << " unloaded" << std::endl;
+}

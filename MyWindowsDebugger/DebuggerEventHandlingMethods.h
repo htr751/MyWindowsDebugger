@@ -1,14 +1,19 @@
 #pragma once
 #include<Windows.h>
+#include<unordered_map>
 #include"ProcessInfo.h"
 #include"windowsUtillities.h"
-#include<unordered_map>
+#include"InstructionModifier.h"
+
 
 class DebugEventHandlersManager {
 	std::unordered_map<ThreadID_t, ThreadInfo_t> threadIdToInfoMap;
 	std::unordered_map<PointerToBaseOfDLL_t, std::wstring> baseOfDllToNameMap;
+	InstructionModifier m_instructionModifier;
 
 public:
+	DebugEventHandlersManager(HANDLE processHandle) noexcept;
+
 	void OutputDebugStringEventHandler(const OUTPUT_DEBUG_STRING_INFO& event, const ProcessInfo& processInfo);
 	void CreateProcessEventHandler(const CREATE_PROCESS_DEBUG_INFO& event);
 	void CreateThreadDebugEventHandler(const CREATE_THREAD_DEBUG_INFO& event);

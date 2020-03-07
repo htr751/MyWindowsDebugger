@@ -3,13 +3,17 @@
 #include<memory>
 #include"FileHandle.h"
 
+DebugEventHandlersManager::DebugEventHandlersManager(HANDLE processHandle)noexcept :m_instructionModifier(processHandle){
+
+}
+
 void DebugEventHandlersManager::OutputDebugStringEventHandler(const OUTPUT_DEBUG_STRING_INFO& event, const ProcessInfo& processInfo) {
 	std::unique_ptr<wchar_t[]> outputString = std::make_unique<wchar_t[]>(event.nDebugStringLength);// we allocate enough space for the case of the unicode output string
 
 	size_t numberOfBytesReadFromProcessMemory = 0;
 	bool err = ReadProcessMemory(processInfo.processInfo.hProcess,outputString.get(), event.lpDebugStringData, event.nDebugStringLength * 2, &numberOfBytesReadFromProcessMemory);
 
-	if (!err || numberOfBytesReadFromProcessMemory != (DWORD)event.nDebugStringLength * 2)
+	if (!err || numberOfBytesReadFromProcessMemory != ((DWORD)event.nDebugStringLength) * 2)
 		CreateRunTimeError(GetLastErrorMessage(), L"unknown error type");
 
 	std::wcout << "debugee thread id: " << processInfo.processInfo.dwThreadId << " inside debugee process: " << processInfo.processInfo.dwProcessId << " says: ";
@@ -50,11 +54,11 @@ void DebugEventHandlersManager::UnLoadDllDebugEventHandler(const UNLOAD_DLL_DEBU
 	std::wcout << "dll " << this->baseOfDllToNameMap[event.lpBaseOfDll] << " unloaded" << std::endl;
 }
 
-void ExitProcessDebugEventHandler(const EXIT_PROCESS_DEBUG_INFO& event) {
+void DebugEventHandlersManager::ExitProcessDebugEventHandler(const EXIT_PROCESS_DEBUG_INFO& event) {
 	std::wcout << "the debugee process has exited with code " << std::hex << event.dwExitCode << std::endl;
 }
 
-void ExceptionDebugEventHandler(const EXCEPTION_DEBUG_INFO& event, DWORD& continueStatus) {
+void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG_INFO& event, DWORD& continueStatus) {
 	if (event.ExceptionRecord.ExceptionCode == STATUS_BREAKPOINT) {
 		std::wcout << "break point exception accourd " << std::endl;
 		continueStatus = DBG_CONTINUE;

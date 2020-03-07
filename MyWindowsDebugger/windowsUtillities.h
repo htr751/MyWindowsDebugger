@@ -9,6 +9,8 @@
 
 using ThreadID_t = DWORD;
 using ThreadInfo_t = CREATE_THREAD_DEBUG_INFO;
+using ProcessID_t = DWORD;
+
 std::optional<std::wstring> GetLastErrorMessage()noexcept;
 
 //throws runtime error  with message as its message

@@ -30,6 +30,10 @@ void CreateProcessEventHandler(const CREATE_PROCESS_DEBUG_INFO& event) {
 
 void CreateThreadDebugEventHandler(const CREATE_THREAD_DEBUG_INFO& event, std::unordered_map<ThreadID_t, ThreadInfo_t>& threadIDtoInfoMap) {
 	ThreadID_t threadID = GetThreadId(event.hThread);
-	std::wcout << "Thread " << event.hThread << " (Thread ID: " << threadID << ") created at " << std::hex << event.lpStartAddress << std::endl;
+	std::wcout << "Thread " << event.hThread << std::dec << " (Thread ID: " << threadID << ") created at " << std::hex << event.lpStartAddress << std::endl;
 	threadIDtoInfoMap[threadID] = event;
+}
+
+void ExitThreadDebugEventHandler(const EXIT_THREAD_DEBUG_INFO& event, ThreadID_t threadID) {
+	std::wcout << "The thread " << std::dec << threadID << " exited with code " << event.dwExitCode << std::endl;
 }

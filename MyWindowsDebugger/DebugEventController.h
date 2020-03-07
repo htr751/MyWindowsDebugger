@@ -2,6 +2,7 @@
 #include<Windows.h>
 #include"overload.h"
 #include"DebugEvent.h"
+#include"windowsUtillities.h"
 
 class DebugEventController {
 	DebugEvent event;
@@ -15,4 +16,6 @@ public:
 	}
 
 	void ContinueDebugee() const noexcept;
+	ThreadID_t GetCurrentThreadID() const noexcept;
+	ProcessID_t GetCurrentProcessID() const noexcept;
 };

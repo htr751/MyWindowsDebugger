@@ -23,7 +23,7 @@ int main(int argc, char** argv)
                     [&processInformation](const OUTPUT_DEBUG_STRING_INFO& event) {OutputDebugStringEventHandler(event, processInformation); },
                     [](const CREATE_PROCESS_DEBUG_INFO& event) {CreateProcessEventHandler(event); }, 
                     [&threadIDtoInfoMap](const CREATE_THREAD_DEBUG_INFO& event) {CreateThreadDebugEventHandler(event, threadIDtoInfoMap); },
-                    [](const EXIT_THREAD_DEBUG_INFO& event) {}, 
+                    [&debugLoopEventController](const EXIT_THREAD_DEBUG_INFO& event) {ExitThreadDebugEventHandler(event, debugLoopEventController.GetCurrentThreadID()); },
                     [](const EXIT_PROCESS_DEBUG_INFO& event) {},
                     [](const EXCEPTION_DEBUG_INFO& event) {}, 
                     [](const LOAD_DLL_DEBUG_INFO& event) {},

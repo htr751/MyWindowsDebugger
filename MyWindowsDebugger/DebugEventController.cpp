@@ -17,3 +17,11 @@ void DebugEventController::ContinueDebugee() const noexcept {
 	if (!err)
 		CreateRunTimeError(GetLastErrorMessage(), std::wstring(L"unknown error type"));
 }
+
+ThreadID_t DebugEventController::GetCurrentThreadID() const noexcept {
+	return this->event.getThreadID();
+}
+
+ProcessID_t DebugEventController::GetCurrentProcessID() const noexcept {
+	return this->event.getProcessID();
+}

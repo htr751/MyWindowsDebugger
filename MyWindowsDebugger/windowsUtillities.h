@@ -10,6 +10,7 @@
 using ThreadID_t = DWORD;
 using ThreadInfo_t = CREATE_THREAD_DEBUG_INFO;
 using ProcessID_t = DWORD;
+using PointerToBaseOfDLL_t = LPVOID;
 
 std::optional<std::wstring> GetLastErrorMessage()noexcept;
 

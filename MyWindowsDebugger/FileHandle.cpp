@@ -20,7 +20,7 @@ std::wstring FileHandle::getFullFileName() const {
 	std::unique_ptr<WCHAR[]> containerForNameString = std::make_unique<WCHAR[]>(nameLength);
 
 	GetFinalPathNameByHandle(this->m_handle, containerForNameString.get(), nameLength, VOLUME_NAME_DOS);
-	return std::wstring(containerForNameString.get());
+	return std::wstring(containerForNameString.get()).substr(4);
 }
 
 FileHandle::~FileHandle() noexcept{

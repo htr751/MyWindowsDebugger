@@ -16,6 +16,7 @@ int main(int argc, char** argv)
     ProcessInfo processInformation{ L"C:\\Users\\htr751\\Documents\\C++ Projects\\Exception Handling\\Debug\\Exception Handling.exe " };
     DebugEventController debugLoopEventController;
     std::unordered_map<ThreadID_t, ThreadInfo_t> threadIDtoInfoMap;
+    std::unordered_map<PointerToBaseOfDLL_t, std::wstring> baseOfDLLToNameMap;
     while (true) {
         try {
             debugLoopEventController.WaitForDebugEvent();
@@ -26,7 +27,7 @@ int main(int argc, char** argv)
                     [&debugLoopEventController](const EXIT_THREAD_DEBUG_INFO& event) {ExitThreadDebugEventHandler(event, debugLoopEventController.GetCurrentThreadID()); },
                     [](const EXIT_PROCESS_DEBUG_INFO& event) {},
                     [](const EXCEPTION_DEBUG_INFO& event) {}, 
-                    [](const LOAD_DLL_DEBUG_INFO& event) {},
+                    [&baseOfDLLToNameMap](const LOAD_DLL_DEBUG_INFO& event) {DllLoadDebugEventHandler(event, baseOfDLLToNameMap); },
                     [](const UNLOAD_DLL_DEBUG_INFO& event) {},
                     [](const RIP_INFO& event) {}
                 });

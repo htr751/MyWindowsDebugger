@@ -37,3 +37,11 @@ void CreateThreadDebugEventHandler(const CREATE_THREAD_DEBUG_INFO& event, std::u
 void ExitThreadDebugEventHandler(const EXIT_THREAD_DEBUG_INFO& event, ThreadID_t threadID) {
 	std::wcout << "The thread " << std::dec << threadID << " exited with code " << event.dwExitCode << std::endl;
 }
+
+void DllLoadDebugEventHandler(const LOAD_DLL_DEBUG_INFO& event, std::unordered_map<PointerToBaseOfDLL_t, std::wstring>& baseOfDLLToNameMap) {
+	FileHandle m_dllFileHandle{ event.hFile };
+	std::wstring dllName = m_dllFileHandle.getFullFileName();
+
+	baseOfDLLToNameMap[event.lpBaseOfDll] = dllName;
+	std::wcout << "dll " << dllName << " loaded at " << event.lpBaseOfDll << std::endl;
+}

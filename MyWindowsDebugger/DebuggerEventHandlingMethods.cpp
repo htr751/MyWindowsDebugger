@@ -11,7 +11,7 @@ void DebugEventHandlersManager::OutputDebugStringEventHandler(const OUTPUT_DEBUG
 	std::unique_ptr<wchar_t[]> outputString = std::make_unique<wchar_t[]>(event.nDebugStringLength);// we allocate enough space for the case of the unicode output string
 
 	size_t numberOfBytesReadFromProcessMemory = 0;
-	bool err = ReadProcessMemory(processInfo.processInfo.hProcess,outputString.get(), event.lpDebugStringData, event.nDebugStringLength * 2, &numberOfBytesReadFromProcessMemory);
+	bool err = ReadProcessMemory(processInfo.processInfo.hProcess,outputString.get(), event.lpDebugStringData, (DWORD64)(event.nDebugStringLength) * 2, &numberOfBytesReadFromProcessMemory);
 
 	if (!err || numberOfBytesReadFromProcessMemory != ((DWORD64)event.nDebugStringLength) * 2)
 		CreateRunTimeError(GetLastErrorMessage(), L"unknown error type");
@@ -31,6 +31,10 @@ void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_D
 	std::wcout << "thread id: " << GetThreadId(event.hThread) << std::endl;
 	std::wcout << "process executable name is: " << m_fileHandle.getFullFileName() << std::endl;
 	std::wcout << "process start address is: " << event.lpStartAddress << std::endl;
+
+	//setting break point at the start address of the thread
+	InstructionModifier::InstructionAddress_t threadStartAddress = GetThreadStartAddress(event.hProcess, event.hThread);
+	ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
 }
 
 void DebugEventHandlersManager::CreateThreadDebugEventHandler(const CREATE_THREAD_DEBUG_INFO& event) {
@@ -60,8 +64,17 @@ void DebugEventHandlersManager::ExitProcessDebugEventHandler(const EXIT_PROCESS_
 }
 
 void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG_INFO& event, DWORD& continueStatus) {
+	//the kernel always send break point event when creating the process
+	//this variable is used to indicate whether it already has happend
+	static bool firstBreakPointAlreadyHit = false;
 	if (event.ExceptionRecord.ExceptionCode == STATUS_BREAKPOINT) {
 		std::wcout << "break point exception accourd at address " << event.ExceptionRecord.ExceptionAddress << std::endl;
+		if (firstBreakPointAlreadyHit) {
+
+		}
+		else {
+			firstBreakPointAlreadyHit = true;
+		}
 		continueStatus = DBG_CONTINUE;
 	}
 	else {

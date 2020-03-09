@@ -30,3 +30,9 @@ void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const 
 	else
 		throw wLogicException(alternativeMessage);
 }
+
+void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, InstructionModifier::InstructionAddress_t instructionAddr) {
+	std::array<char, 15> changedInstruction;
+	changedInstruction.fill('\xCC');
+	instructionModifier.changeInstruction(instructionAddr, changedInstruction, 1);
+}

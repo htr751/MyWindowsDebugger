@@ -2,8 +2,9 @@
 #include"windowsUtillities.h"
 #include<memory>
 #include"FileHandle.h"
+#include"CliRendering.h"
 
-DebugEventHandlersManager::DebugEventHandlersManager(HANDLE processHandle)noexcept :m_instructionModifier(processHandle){
+DebugEventHandlersManager::DebugEventHandlersManager(HANDLE processHandle, const DebugEventController& debugEventController)noexcept :m_instructionModifier(processHandle), m_debugEventController(debugEventController){
 
 }
 
@@ -31,11 +32,10 @@ void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_D
 	std::wcout << "thread id: " << GetThreadId(event.hThread) << std::endl;
 	std::wcout << "process executable name is: " << m_fileHandle.getFullFileName() << std::endl;
 	std::wcout << "process start address is: " << event.lpStartAddress << std::endl;
-	this->debugeeProcessInfo = event;
 
 	//setting break point at the start address of the thread
-	InstructionModifier::InstructionAddress_t threadStartAddress = GetThreadStartAddress(event.hProcess, event.hThread);
-	ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
+	//InstructionModifier::InstructionAddress_t threadStartAddress = GetThreadStartAddress(event.hProcess, event.hThread);
+	//ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
 	
 }
 
@@ -72,7 +72,9 @@ void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG
 	if (event.ExceptionRecord.ExceptionCode == STATUS_BREAKPOINT) {
 		std::wcout << "break point exception accourd at address " << event.ExceptionRecord.ExceptionAddress << std::endl;
 		if (firstBreakPointAlreadyHit) {
-			RevertRipAfterBreakPointException(this->debugeeProcessInfo, this->m_instructionModifier);
+			HANDLE threadHandle = GetThreadHandleByID(this->m_debugEventController.GetCurrentThreadID());
+			RevertRipAfterBreakPointException(threadHandle, this->m_instructionModifier);
+			DisplayCpuRegisters(threadHandle, &CliRendering::RenderCpuRegisters);
 
 		}
 		else {
@@ -82,6 +84,10 @@ void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG
 	}
 	else {
 		std::wcout << "first chance exception accourd, exception code is: " << event.ExceptionRecord.ExceptionCode << std::endl;
+		std::wcout << std::endl;
+		HANDLE threadHandle = GetThreadHandleByID(this->m_debugEventController.GetCurrentThreadID());
+		DisplayCpuRegisters(threadHandle, &CliRendering::RenderCpuRegisters);
+		std::wcout << std::endl;
 		continueStatus = DBG_EXCEPTION_NOT_HANDLED;
 	}
 }

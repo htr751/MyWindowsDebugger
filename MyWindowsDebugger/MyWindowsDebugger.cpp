@@ -13,9 +13,9 @@
 
 int main(int argc, char** argv)
 {
-    ProcessInfo processInformation{ L"C:\\Users\\htr751\\Documents\\C++ Projects\\Exception Handling\\Debug\\Exception Handling.exe " };
+    ProcessInfo processInformation{ L"C:\\Users\\htr751\\Documents\\C++ Projects\\DebuggingAssistent\\Debug\\DebuggingAssistent.exe" };
     DebugEventController debugLoopEventController;
-    DebugEventHandlersManager debugEventManager{ processInformation.processInfo.hProcess };
+    DebugEventHandlersManager debugEventManager{ processInformation.processInfo.hProcess, debugLoopEventController };
 
     bool continueDebugging = true;
     DWORD continueStatus = DBG_CONTINUE;

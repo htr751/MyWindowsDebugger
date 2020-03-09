@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CliRendering.cpp" />
     <ClCompile Include="DebugEvent.cpp" />
     <ClCompile Include="DebugEventController.cpp" />
     <ClCompile Include="DebuggerEventHandlingMethods.cpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="wRunTimeException.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CliRendering.h" />
     <ClInclude Include="DebugEvent.h" />
     <ClInclude Include="DebugEventController.h" />
     <ClInclude Include="DebuggerEventHandlingMethods.h" />

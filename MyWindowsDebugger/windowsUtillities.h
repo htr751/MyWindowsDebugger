@@ -4,6 +4,7 @@
 #include<optional>
 #include<stdexcept>
 #include<iostream>
+#include<functional>
 #include"wLogicException.h"
 #include"wRunTimeException.h"
 #include"InstructionModifier.h"
@@ -22,4 +23,19 @@ void CreateRunTimeError(const std::optional<std::wstring>& optionalMessage, cons
 void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage = std::wstring(L"unknown error type"));
 void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, InstructionModifier::InstructionAddress_t instructionAddr);
 InstructionModifier::InstructionAddress_t GetThreadStartAddress(HANDLE pHandle, HANDLE tHandle);
-void RevertRipAfterBreakPointException(const CREATE_PROCESS_DEBUG_INFO& processInfo, InstructionModifier& instructionModifier);
+void RevertRipAfterBreakPointException(HANDLE hThread, InstructionModifier& instructionModifier);
+
+HANDLE GetThreadHandleByID(DWORD threadID);
+
+//this function uses render func callback to render all cpu registers
+template<typename RenderFunction>
+void DisplayCpuRegisters(HANDLE hThread, RenderFunction&& renderFunc) {
+	CONTEXT threadContext;
+	threadContext.ContextFlags |= CONTEXT_ALL;
+
+	bool err = GetThreadContext(hThread, &threadContext);
+	if (!err)
+		CreateRunTimeError(GetLastErrorMessage());
+
+	std::invoke(std::forward<RenderFunction>(renderFunc), threadContext);
+}

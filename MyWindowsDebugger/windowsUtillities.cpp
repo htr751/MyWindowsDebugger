@@ -36,3 +36,23 @@ void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, Ins
 	changedInstruction.fill('\xCC');
 	instructionModifier.changeInstruction(instructionAddr, changedInstruction, 1);
 }
+
+void RevertRipAfterBreakPointException(const CREATE_PROCESS_DEBUG_INFO& processInfo, InstructionModifier& instructionModifier) {
+	CONTEXT threadCurrentContext;
+	threadCurrentContext.ContextFlags |= CONTEXT_ALL;
+	bool err = GetThreadContext(processInfo.hThread, &threadCurrentContext);
+	if (!err)
+		CreateRunTimeError(GetLastErrorMessage());
+
+	//the processor executed break point instruction which is one byte length so it advanced rip by 1
+	//get rip to be with its original value
+	threadCurrentContext.Rip--;
+	err = SetThreadContext(processInfo.hThread, &threadCurrentContext);
+	if (!err)
+		CreateRunTimeError(GetLastErrorMessage());
+	try {
+		instructionModifier.restoreInstruction((InstructionModifier::InstructionAddress_t)threadCurrentContext.Rip);
+	}
+	catch (const wLogicException & err) { std::wcout << err.what() << std::endl; throw err; }
+
+}

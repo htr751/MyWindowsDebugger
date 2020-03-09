@@ -22,3 +22,4 @@ void CreateRunTimeError(const std::optional<std::wstring>& optionalMessage, cons
 void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage = std::wstring(L"unknown error type"));
 void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, InstructionModifier::InstructionAddress_t instructionAddr);
 InstructionModifier::InstructionAddress_t GetThreadStartAddress(HANDLE pHandle, HANDLE tHandle);
+void RevertRipAfterBreakPointException(const CREATE_PROCESS_DEBUG_INFO& processInfo, InstructionModifier& instructionModifier);

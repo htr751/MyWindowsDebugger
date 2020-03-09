@@ -10,6 +10,7 @@ class DebugEventHandlersManager {
 	std::unordered_map<ThreadID_t, ThreadInfo_t> threadIdToInfoMap;
 	std::unordered_map<PointerToBaseOfDLL_t, std::wstring> baseOfDllToNameMap;
 	InstructionModifier m_instructionModifier;
+	CREATE_PROCESS_DEBUG_INFO debugeeProcessInfo;
 
 public:
 	DebugEventHandlersManager(HANDLE processHandle) noexcept;

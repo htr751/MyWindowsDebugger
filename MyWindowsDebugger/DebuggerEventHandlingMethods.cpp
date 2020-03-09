@@ -31,10 +31,12 @@ void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_D
 	std::wcout << "thread id: " << GetThreadId(event.hThread) << std::endl;
 	std::wcout << "process executable name is: " << m_fileHandle.getFullFileName() << std::endl;
 	std::wcout << "process start address is: " << event.lpStartAddress << std::endl;
+	this->debugeeProcessInfo = event;
 
 	//setting break point at the start address of the thread
 	InstructionModifier::InstructionAddress_t threadStartAddress = GetThreadStartAddress(event.hProcess, event.hThread);
 	ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
+	
 }
 
 void DebugEventHandlersManager::CreateThreadDebugEventHandler(const CREATE_THREAD_DEBUG_INFO& event) {
@@ -70,6 +72,7 @@ void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG
 	if (event.ExceptionRecord.ExceptionCode == STATUS_BREAKPOINT) {
 		std::wcout << "break point exception accourd at address " << event.ExceptionRecord.ExceptionAddress << std::endl;
 		if (firstBreakPointAlreadyHit) {
+			RevertRipAfterBreakPointException(this->debugeeProcessInfo, this->m_instructionModifier);
 
 		}
 		else {

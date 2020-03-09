@@ -25,6 +25,9 @@ void InstructionModifier::changeInstruction(InstructionModifier::InstructionAddr
 	err = WriteProcessMemory(this->processHandle, instructionAddr, newInstruction.data(), sizeOfChangedInstruction, NULL);
 	if (!err)
 		CreateRunTimeError(GetLastErrorMessage());
+	err = FlushInstructionCache(this->processHandle, instructionAddr, sizeOfChangedInstruction);
+	if (!err)
+		CreateRunTimeError(GetLastErrorMessage());
 }
 
 void InstructionModifier::restoreInstruction(InstructionAddress_t instructionAddr) {
@@ -33,6 +36,9 @@ void InstructionModifier::restoreInstruction(InstructionAddress_t instructionAdd
 
 	InstructionModifier::InstructionModifierDataEntry instructionModifiedEntry = this->modifiedInstructions[instructionAddr];
 	bool err = WriteProcessMemory(this->processHandle, instructionAddr, instructionModifiedEntry.savedInstruction.data(), instructionModifiedEntry.sizeOfSavedInstruction, NULL);
+	if (!err)
+		CreateRunTimeError(GetLastErrorMessage());
+	err = FlushInstructionCache(this->processHandle, instructionAddr, instructionModifiedEntry.sizeOfSavedInstruction);
 	if (!err)
 		CreateRunTimeError(GetLastErrorMessage());
 	this->modifiedInstructions.erase(instructionAddr);

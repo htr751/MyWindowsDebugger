@@ -13,7 +13,7 @@ void DebugEventHandlersManager::OutputDebugStringEventHandler(const OUTPUT_DEBUG
 	size_t numberOfBytesReadFromProcessMemory = 0;
 	bool err = ReadProcessMemory(processInfo.processInfo.hProcess,outputString.get(), event.lpDebugStringData, event.nDebugStringLength * 2, &numberOfBytesReadFromProcessMemory);
 
-	if (!err || numberOfBytesReadFromProcessMemory != ((DWORD)event.nDebugStringLength) * 2)
+	if (!err || numberOfBytesReadFromProcessMemory != ((DWORD64)event.nDebugStringLength) * 2)
 		CreateRunTimeError(GetLastErrorMessage(), L"unknown error type");
 
 	std::wcout << "debugee thread id: " << processInfo.processInfo.dwThreadId << " inside debugee process: " << processInfo.processInfo.dwProcessId << " says: ";
@@ -30,6 +30,7 @@ void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_D
 	std::wcout << "process id: " << GetProcessId(event.hProcess) << std::endl;
 	std::wcout << "thread id: " << GetThreadId(event.hThread) << std::endl;
 	std::wcout << "process executable name is: " << m_fileHandle.getFullFileName() << std::endl;
+	std::wcout << "process start address is: " << event.lpStartAddress << std::endl;
 }
 
 void DebugEventHandlersManager::CreateThreadDebugEventHandler(const CREATE_THREAD_DEBUG_INFO& event) {
@@ -60,7 +61,7 @@ void DebugEventHandlersManager::ExitProcessDebugEventHandler(const EXIT_PROCESS_
 
 void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG_INFO& event, DWORD& continueStatus) {
 	if (event.ExceptionRecord.ExceptionCode == STATUS_BREAKPOINT) {
-		std::wcout << "break point exception accourd " << std::endl;
+		std::wcout << "break point exception accourd at address " << event.ExceptionRecord.ExceptionAddress << std::endl;
 		continueStatus = DBG_CONTINUE;
 	}
 	else {

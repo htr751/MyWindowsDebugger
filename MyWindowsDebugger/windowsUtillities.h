@@ -5,6 +5,7 @@
 #include<stdexcept>
 #include<iostream>
 #include<functional>
+#include<Psapi.h>
 #include"wLogicException.h"
 #include"wRunTimeException.h"
 #include"InstructionModifier.h"
@@ -39,3 +40,7 @@ void DisplayCpuRegisters(HANDLE hThread, RenderFunction&& renderFunc) {
 
 	std::invoke(std::forward<RenderFunction>(renderFunc), threadContext);
 }
+
+MODULEINFO GetModuleInfo(HANDLE processHandle, HMODULE module);
+struct _IMAGEHLP_MODULE64 LoadModuleSymbols(HANDLE processHandle, HANDLE fileHandle, PCSTR imageName, DWORD64 baseOfImage, DWORD64 sizeOfImage);
+std::size_t GetModuleSize(HMODULE moduleHandler, HANDLE processHandle);

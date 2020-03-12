@@ -5,12 +5,14 @@
 #include"windowsUtillities.h"
 #include"InstructionModifier.h"
 #include"ProcessInfo.h"
+#include"CliRendering.h"
 
 class DebugEventHandlersManager {
 	std::unordered_map<ThreadID_t, ThreadInfo_t> threadIdToInfoMap;
 	std::unordered_map<PointerToBaseOfDLL_t, std::wstring> baseOfDllToNameMap;
 	InstructionModifier m_instructionModifier;
 	const DebugEventController& m_debugEventController;
+	CREATE_PROCESS_DEBUG_INFO createProcessInfo;
 
 public:
 	DebugEventHandlersManager(HANDLE processHandle, const DebugEventController& debugEventController) noexcept;

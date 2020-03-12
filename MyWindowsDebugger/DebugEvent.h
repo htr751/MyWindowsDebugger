@@ -18,7 +18,7 @@ public:
 	DebugEvent& operator=(const DEBUG_EVENT& other) noexcept;
 
 	template<typename... Handlers>
-	void HandleDebugEvent(const overload<Handlers...>& handlers) const noexcept {
+	void HandleDebugEvent(const overload<Handlers...>& handlers) const{
 		std::visit(handlers, this->eventInfo);
 	}
 

@@ -1,8 +1,12 @@
 #include"DebuggerEventHandlingMethods.h"
 #include"windowsUtillities.h"
 #include<memory>
+#include<Dbghelp.h>
+#include<Psapi.h>
 #include"FileHandle.h"
 #include"CliRendering.h"
+#include"PE_Parser.h"
+#include"Utillities.h"
 
 DebugEventHandlersManager::DebugEventHandlersManager(HANDLE processHandle, const DebugEventController& debugEventController)noexcept :m_instructionModifier(processHandle), m_debugEventController(debugEventController){
 
@@ -32,10 +36,25 @@ void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_D
 	std::wcout << "thread id: " << GetThreadId(event.hThread) << std::endl;
 	std::wcout << "process executable name is: " << m_fileHandle.getFullFileName() << std::endl;
 	std::wcout << "process start address is: " << event.lpStartAddress << std::endl;
+	this->createProcessInfo = event;
 
+	bool symIntiallizeSuccess = SymInitialize(event.hProcess, NULL, false);
+	if (!symIntiallizeSuccess)
+		CreateRunTimeError(GetLastErrorMessage());
+
+	std::size_t sizeOfImage = GetModuleSize(static_cast<HMODULE>(event.lpBaseOfImage), event.hProcess);
+	_IMAGEHLP_MODULE64 moduleInfo = LoadModuleSymbols(event.hProcess, event.hFile, (PCSTR)event.lpImageName, (DWORD64)event.lpBaseOfImage, sizeOfImage);
+
+	if (moduleInfo.SymType == SymPdb)
+		CliRendering::RenderModuleLoadSymbolsSuccession(moduleInfo.ModuleName, moduleInfo.BaseOfImage, true);
+	else
+		CliRendering::RenderModuleLoadSymbolsSuccession(moduleInfo.ModuleName, moduleInfo.BaseOfImage, false);
+		
 	//setting break point at the start address of the thread
-	//InstructionModifier::InstructionAddress_t threadStartAddress = GetThreadStartAddress(event.hProcess, event.hThread);
-	//ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
+	/*
+	InstructionModifier::InstructionAddress_t threadStartAddress = GetThreadStartAddress(event.hProcess, event.hThread);
+	ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
+	*/
 	
 }
 
@@ -54,15 +73,27 @@ void DebugEventHandlersManager::DllLoadDebugEventHandler(const LOAD_DLL_DEBUG_IN
 	std::wstring dllName = m_dllFileHandle.getFullFileName();
 
 	this->baseOfDllToNameMap[event.lpBaseOfDll] = dllName;
-	std::wcout << "dll " << dllName << " loaded at " << event.lpBaseOfDll << std::endl;
+	//HANDLE processHandle = OpenProcess(PROCESS_ALL_ACCESS, false, this->m_debugEventController.GetCurrentProcessID());
+
+	HMODULE moduleHandle = static_cast<HMODULE>(event.lpBaseOfDll);
+	std::size_t dllSize = GetModuleSize(moduleHandle, this->createProcessInfo.hProcess);
+	_IMAGEHLP_MODULE64 dllInfo = LoadModuleSymbols(this->createProcessInfo.hProcess, event.hFile, static_cast<PCSTR>(wstringTostring(dllName).c_str()), (DWORD64)event.lpBaseOfDll, dllSize);
+	if (dllInfo.SymType == SymPdb)
+		CliRendering::RenderModuleLoadSymbolsSuccession(dllInfo.ModuleName, dllInfo.BaseOfImage, true);
+	else
+		CliRendering::RenderModuleLoadSymbolsSuccession(dllInfo.ModuleName, dllInfo.BaseOfImage, false);
 }
 
 void DebugEventHandlersManager::UnLoadDllDebugEventHandler(const UNLOAD_DLL_DEBUG_INFO& event) {
 	std::wcout << "dll " << this->baseOfDllToNameMap[event.lpBaseOfDll] << " unloaded" << std::endl;
+	if (!SymUnloadModule64(this->createProcessInfo.hProcess, (DWORD64)event.lpBaseOfDll))
+		CreateRunTimeError(GetLastErrorMessage());
 }
 
 void DebugEventHandlersManager::ExitProcessDebugEventHandler(const EXIT_PROCESS_DEBUG_INFO& event) {
 	std::wcout << "the debugee process has exited with code " << std::hex << event.dwExitCode << std::endl;
+	if (!SymUnloadModule64(this->createProcessInfo.hProcess, (DWORD64)this->createProcessInfo.lpBaseOfImage))
+		CreateRunTimeError(GetLastErrorMessage());
 }
 
 void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG_INFO& event, DWORD& continueStatus) {

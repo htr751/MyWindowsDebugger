@@ -1,4 +1,7 @@
 #include"windowsUtillities.h"
+#include<DbgHelp.h>
+#include<memory>
+#include"PE_Parser.h"
 
 std::optional<std::wstring> GetLastErrorMessage()noexcept {
 	DWORD errorMessageId = GetLastError();
@@ -62,4 +65,32 @@ HANDLE GetThreadHandleByID(DWORD threadID) {
 	if (!tHandle)
 		CreateRunTimeError(GetLastErrorMessage());
 	return tHandle;
+}
+
+MODULEINFO GetModuleInfo(HANDLE processHandle, HMODULE module) {
+	MODULEINFO info = { 0 };
+	if (!GetModuleInformation(processHandle, module, &info, sizeof(info)))
+		CreateRunTimeError(GetLastErrorMessage());
+
+	return info;
+}
+
+_IMAGEHLP_MODULE64 LoadModuleSymbols(HANDLE processHandle, HANDLE fileHandle, PCSTR imageName, DWORD64 baseOfImage, DWORD64 sizeOfImage) {
+	DWORD64 moduleBase = SymLoadModuleEx(processHandle, fileHandle, imageName, NULL, baseOfImage, static_cast<DWORD>(sizeOfImage), NULL, NULL);
+	if (!moduleBase)
+		CreateRunTimeError(GetLastErrorMessage());
+
+	_IMAGEHLP_MODULE64 moduleInfo;
+	moduleInfo.SizeOfStruct = sizeof(moduleInfo);
+	bool success = SymGetModuleInfo64(processHandle, moduleBase, &moduleInfo);
+	if (!success)
+		CreateRunTimeError(GetLastErrorMessage());
+
+	return moduleInfo;
+}
+
+std::size_t GetModuleSize(HMODULE moduleHandler, HANDLE processHandle){
+	PE_Parser m_PE_Parser{ moduleHandler, processHandle };
+	IMAGE_NT_HEADERS m_Image_Headers = m_PE_Parser.GetImageFileHeaders();
+	return m_Image_Headers.OptionalHeader.SizeOfImage;
 }

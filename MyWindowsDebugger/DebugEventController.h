@@ -11,7 +11,7 @@ public:
 	void WaitForDebugEvent();
 
 	template<typename... Handlers>
-	void ProcessDebugEvent(overload<Handlers...> handlingFunctions) const noexcept {
+	void ProcessDebugEvent(overload<Handlers...> handlingFunctions) const {
 		this->event.HandleDebugEvent(handlingFunctions);
 	}
 

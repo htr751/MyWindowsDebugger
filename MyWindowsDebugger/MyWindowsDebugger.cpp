@@ -13,7 +13,7 @@
 
 int main(int argc, char** argv)
 {
-    ProcessInfo processInformation{ L"C:\\Users\\htr751\\Documents\\C++ Projects\\DebuggingAssistent\\Debug\\DebuggingAssistent.exe" };
+    ProcessInfo processInformation{ L"C:\\Users\\htr751\\Documents\\C++ Projects\\DebuggingAssistent\\x64\\Debug\\DebuggingAssistent.exe" };
     DebugEventController debugLoopEventController;
     DebugEventHandlersManager debugEventManager{ processInformation.processInfo.hProcess, debugLoopEventController };
 

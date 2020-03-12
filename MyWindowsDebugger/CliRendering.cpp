@@ -1,6 +1,7 @@
 #include"CliRendering.h"
 #include<iostream>
 #include<iomanip>
+#include<sstream>
 
 void CliRendering::RenderCpuRegisters(const CONTEXT& renderedContext) {
 	std::wcout << "RAX = 0x" << std::setfill(L'0') <<std::setw(16) << std::hex << renderedContext.Rax << std::endl;
@@ -21,4 +22,12 @@ void CliRendering::RenderCpuRegisters(const CONTEXT& renderedContext) {
 	std::wcout << "R14 = 0x" << std::setfill(L'0') << std::setw(16) << std::hex << renderedContext.R14 << std::endl;
 	std::wcout << "R15 = 0x" << std::setfill(L'0') << std::setw(16) << std::hex << renderedContext.R15 << std::endl;
 	std::wcout << "EFLAGS = 0x " << std::setfill(L'0') << std::setw(16) << std::hex << renderedContext.EFlags << std::endl;
+}
+
+void CliRendering::RenderModuleLoadSymbolsSuccession(const std::string& moduleName, DWORD64 baseOfDll, bool success) {
+	std::cout << "Loaded module " << moduleName.c_str() << " at address 0x" << std::setfill('0') << std::setw(16) << std::hex << baseOfDll;
+	if (success)
+		std::cout << ", symbols found" << std::endl;
+	else
+		std::cout << ", no debugging symbols" << std::endl;
 }

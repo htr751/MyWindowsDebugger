@@ -12,7 +12,7 @@ class DebugEventHandlersManager {
 	std::unordered_map<PointerToBaseOfDLL_t, std::wstring> baseOfDllToNameMap;
 	InstructionModifier m_instructionModifier;
 	const DebugEventController& m_debugEventController;
-	CREATE_PROCESS_DEBUG_INFO createProcessInfo;
+	CREATE_PROCESS_DEBUG_INFO createProcessInfo = { 0 };
 
 public:
 	DebugEventHandlersManager(HANDLE processHandle, const DebugEventController& debugEventController) noexcept;

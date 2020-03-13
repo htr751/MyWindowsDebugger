@@ -23,7 +23,7 @@ void CreateRunTimeError(const std::optional<std::wstring>& optionalMessage, cons
 //throws logic error with message as its message
 void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage = std::wstring(L"unknown error type"));
 void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, InstructionModifier::InstructionAddress_t instructionAddr);
-InstructionModifier::InstructionAddress_t GetThreadStartAddress(HANDLE pHandle, HANDLE tHandle);
+InstructionModifier::InstructionAddress_t GetExecutableStartAddress(HMODULE moduleHandle, HANDLE processHandle);
 void RevertRipAfterBreakPointException(HANDLE hThread, InstructionModifier& instructionModifier);
 
 HANDLE GetThreadHandleByID(DWORD threadID);

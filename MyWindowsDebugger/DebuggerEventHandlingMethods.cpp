@@ -52,11 +52,9 @@ void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_D
 		CliRendering::RenderModuleLoadSymbolsSuccession(moduleInfo.ModuleName, moduleInfo.BaseOfImage, false);
 		
 	//setting break point at the start address of the thread
-	/*
-	InstructionModifier::InstructionAddress_t threadStartAddress = GetThreadStartAddress(event.hProcess, event.hThread);
-	ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
-	*/
 	
+	InstructionModifier::InstructionAddress_t threadStartAddress = GetExecutableStartAddress((HMODULE)event.lpBaseOfImage, event.hProcess);
+	ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
 }
 
 void DebugEventHandlersManager::CreateThreadDebugEventHandler(const CREATE_THREAD_DEBUG_INFO& event) {
@@ -66,7 +64,7 @@ void DebugEventHandlersManager::CreateThreadDebugEventHandler(const CREATE_THREA
 }
 
 void DebugEventHandlersManager::ExitThreadDebugEventHandler(const EXIT_THREAD_DEBUG_INFO& event, ThreadID_t threadID) {
-	std::wcout << "The thread " << std::dec << threadID << " exited with code " << event.dwExitCode << std::endl;
+	std::wcout << "The thread " << std::dec << threadID << " exited with code " <<std::hex << event.dwExitCode << std::endl;
 }
 
 void DebugEventHandlersManager::DllLoadDebugEventHandler(const LOAD_DLL_DEBUG_INFO& event) {

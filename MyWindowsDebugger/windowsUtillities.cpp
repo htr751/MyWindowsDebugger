@@ -56,7 +56,7 @@ void RevertRipAfterBreakPointException(HANDLE hThread, InstructionModifier& inst
 	try {
 		instructionModifier.restoreInstruction((InstructionModifier::InstructionAddress_t)threadCurrentContext.Rip);
 	}
-	catch (const wLogicException & err) { std::wcout << err.what() << std::endl; throw err; }
+	catch (const wLogicException & err) { std::wcout << err.what() << std::endl; throw; }
 
 }
 
@@ -93,4 +93,10 @@ std::size_t GetModuleSize(HMODULE moduleHandler, HANDLE processHandle){
 	PE_Parser m_PE_Parser{ moduleHandler, processHandle };
 	IMAGE_NT_HEADERS m_Image_Headers = m_PE_Parser.GetImageFileHeaders();
 	return m_Image_Headers.OptionalHeader.SizeOfImage;
+}
+
+InstructionModifier::InstructionAddress_t GetExecutableStartAddress(HMODULE moduleHandle, HANDLE processHandle) {
+	PE_Parser m_PE_Parser{ moduleHandle, processHandle };
+	IMAGE_NT_HEADERS m_Image_Headers = m_PE_Parser.GetImageFileHeaders();
+	return reinterpret_cast<InstructionModifier::InstructionAddress_t>(m_Image_Headers.OptionalHeader.ImageBase + m_Image_Headers.OptionalHeader.AddressOfEntryPoint);
 }

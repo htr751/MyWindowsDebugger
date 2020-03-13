@@ -1,8 +1,8 @@
 #include"InstructionModifier.h"
 #include"windowsUtillities.h"
 
-InstructionModifier::InstructionModifierDataEntry::InstructionModifierDataEntry(const std::array<char, 15>& savedinstruction, size_t sizeOfSavedInstruction) {
-	std::memcpy(this->savedInstruction.data(), savedInstruction.data(), sizeOfSavedInstruction);
+InstructionModifier::InstructionModifierDataEntry::InstructionModifierDataEntry(const std::array<unsigned char, 15>& savedinstruction, size_t sizeOfSavedInstruction) {
+	std::memcpy(this->savedInstruction.data(), savedinstruction.data(), sizeOfSavedInstruction);
 	this->sizeOfSavedInstruction = sizeOfSavedInstruction;
 }
 
@@ -16,7 +16,7 @@ void InstructionModifier::changeInstruction(InstructionModifier::InstructionAddr
 	if (this->modifiedInstructions.find(instructionAddr) != this->modifiedInstructions.cend())
 		return;
 
-	std::array<char, 15> savedInstruction;
+	std::array<unsigned char, 15> savedInstruction;
 	bool err = ReadProcessMemory(this->processHandle, instructionAddr, savedInstruction.data(), sizeOfChangedInstruction, NULL);
 	if (!err)
 		CreateRunTimeError(GetLastErrorMessage());

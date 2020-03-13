@@ -7,6 +7,7 @@
 #include"CliRendering.h"
 #include"PE_Parser.h"
 #include"Utillities.h"
+#include"StackWalker.h"
 
 DebugEventHandlersManager::DebugEventHandlersManager(HANDLE processHandle, const DebugEventController& debugEventController)noexcept :m_instructionModifier(processHandle), m_debugEventController(debugEventController){
 
@@ -119,6 +120,9 @@ void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG
 		HANDLE threadHandle = GetThreadHandleByID(this->m_debugEventController.GetCurrentThreadID());
 		DisplayCpuRegisters(threadHandle, &CliRendering::RenderCpuRegisters);
 		std::wcout << std::endl;
+
+		RetrieveCallStack(threadHandle, this->createProcessInfo.hProcess);
+
 		continueStatus = DBG_EXCEPTION_NOT_HANDLED;
 	}
 }

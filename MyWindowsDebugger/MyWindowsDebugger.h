@@ -1,4 +1,5 @@
 #pragma once
 #include<string>
+class DebuggerCore;
 
-int DebuggerThreadEntryPoint(const std::wstring& executableName);
+int DebuggerThreadEntryPoint(DebuggerCore& debuggerCore, std::wstring executableName);

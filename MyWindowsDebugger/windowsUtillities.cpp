@@ -17,23 +17,6 @@ std::optional<std::wstring> GetLastErrorMessage()noexcept {
 	return message;
 }
 
-//throws runtime error  with message as its message
-void CreateRunTimeError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage) {
-	if (optionalMessage.has_value())
-		throw wRunTimeException(optionalMessage.value());
-	else
-		throw wRunTimeException(alternativeMessage);
-		
-}
-
-//throws logic error with message as its message
-void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage) {
-	if (optionalMessage.has_value())
-		throw wLogicException(optionalMessage.value());
-	else
-		throw wLogicException(alternativeMessage);
-}
-
 void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, InstructionAddress_t instructionAddr) {
 	std::array<char, 15> changedInstruction;
 	changedInstruction.fill('\xCC');

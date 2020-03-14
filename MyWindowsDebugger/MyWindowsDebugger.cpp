@@ -11,9 +11,9 @@
 #include"DebuggerEventHandlingMethods.h"
 #include"windowsUtillities.h"
 #include"MyWindowsDebugger.h"
+#include"DebuggerCore.h"
 
-int DebuggerThreadEntryPoint(const std::wstring& executableName)
-{
+int DebuggerThreadEntryPoint(DebuggerCore& debuggerCore, std::wstring executableName) {
     ProcessInfo processInformation{ executableName };
     DebugEventController debugLoopEventController;
     DebugEventHandlersManager debugEventManager{ processInformation.processInfo.hProcess, debugLoopEventController };
@@ -36,7 +36,7 @@ int DebuggerThreadEntryPoint(const std::wstring& executableName)
                 });
             debugLoopEventController.ContinueDebugee(continueStatus);
         }
-        catch (const wRunTimeException& err) {
+        catch (const wRunTimeException & err) {
             std::wcout << err.what() << std::endl;
             return 0;
         }

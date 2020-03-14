@@ -5,11 +5,13 @@
 #include<DbgHelp.h>
 #include"SymbolInfoFactory.h"
 #include"LineInfo.h"
+#include"Utillities.h"
 
 
 template<typename TaskData, typename Task>
 class DebuggerTask {
 	std::promise<TaskData> taskData;
+	using TaskRespone = TaskData;
 public:
 	DebuggerTask() = default;
 	TaskData GetTaskData() { return this->taskData.get_future().get(); }
@@ -32,23 +34,23 @@ public:
 	const std::string& GetSymbolName() const;
 };
 
-class ContextInformationTask : DebuggerTask<CONTEXT, ContextInformationTask> {};
+class ContextInformationTask : public DebuggerTask<CONTEXT, ContextInformationTask> {};
 
-enum class OperationStatus { SUCCEDED, FAILED };
-class SetBreakPointTask : DebuggerTask<OperationStatus, SetBreakPointTask> {
+class SetBreakPointTask : public DebuggerTask<OperationStatus, SetBreakPointTask> {
 	LineInfo instructionSourceInfo;
 public:
 	SetBreakPointTask(const LineInfo& instructionInfo);
 	const LineInfo& GetInstructionInfo() const ;
 };
 
-class RemoveBreakPointTask : DebuggerTask<OperationStatus, RemoveBreakPointTask> {
+class RemoveBreakPointTask : public DebuggerTask<OperationStatus, RemoveBreakPointTask> {
 	LineInfo instructionSourceInfo;
 public:
 	RemoveBreakPointTask(const LineInfo& instructionInfo);
 	const LineInfo& GetInstructionInfo() const;
 };
 
-class ContinueTask : DebuggerTask<OperationStatus, ContinueTask> {};
-class StepIntoTask : DebuggerTask<OperationStatus, StepIntoTask> {};
-class StepTask : DebuggerTask<OperationStatus, StepTask> {};
+class ContinueTask : public DebuggerTask<OperationStatus, ContinueTask> {};
+class StepIntoTask : public DebuggerTask<OperationStatus, StepIntoTask> {};
+class StepTask : public DebuggerTask<OperationStatus, StepTask> {};
+class ExitTask : public DebuggerTask<OperationStatus, ExitTask> {};

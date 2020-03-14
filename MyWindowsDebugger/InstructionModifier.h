@@ -2,7 +2,7 @@
 #include<unordered_map>
 #include<array>
 #include<Windows.h>
-using InstructionAddress_t = void*;
+#include"Utillities.h"
 
 class InstructionModifier {
 	struct InstructionModifierDataEntry {

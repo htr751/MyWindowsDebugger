@@ -1,6 +1,24 @@
 #pragma once
 #include<locale>
 #include<codecvt>
+#include<string>
+#include<optional>
+#include<queue>
+
+using InstructionAddress_t = void*;
+enum class OperationStatus { SUCCEDED, FAILED };
 
 std::string wstringTostring(const std::wstring& str);
 std::wstring stringTowstring(const std::string& str);
+
+//throws runtime error  with message as its message
+void CreateRunTimeError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage = std::wstring(L"unknown error type"));
+
+//throws logic error with message as its message
+void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage = std::wstring(L"unknown error type"));
+
+template<typename Data>
+void emptyQueue(std::queue<Data>& queueToEmpty) {
+	while (!queueToEmpty.empty())
+		queueToEmpty.pop();
+}

@@ -156,6 +156,7 @@
     <ClCompile Include="CliRendering.cpp" />
     <ClCompile Include="DebugEvent.cpp" />
     <ClCompile Include="DebugEventController.cpp" />
+    <ClCompile Include="DebuggerCore.cpp" />
     <ClCompile Include="DebuggerEventHandlingMethods.cpp" />
     <ClCompile Include="DebuggerTasks.cpp" />
     <ClCompile Include="FileHandle.cpp" />
@@ -165,7 +166,7 @@
     <ClCompile Include="ProcessInfo.cpp" />
     <ClCompile Include="StackWalker.cpp" />
     <ClCompile Include="SymbolInfoFactory.cpp" />
-    <ClCompile Include="Utillitiescpp.cpp" />
+    <ClCompile Include="Utillities.cpp" />
     <ClCompile Include="ViewLayer.cpp" />
     <ClCompile Include="wException.cpp" />
     <ClCompile Include="windowsUtillities.cpp" />
@@ -178,7 +179,9 @@
     <ClInclude Include="DebugEventController.h" />
     <ClInclude Include="DebuggerCore.h" />
     <ClInclude Include="DebuggerEventHandlingMethods.h" />
+    <ClInclude Include="DebuggerMessages.h" />
     <ClInclude Include="DebuggerTasks.h" />
+    <ClInclude Include="DebuggerTaskTraits.h" />
     <ClInclude Include="FileHandle.h" />
     <ClInclude Include="InstructionModifier.h" />
     <ClInclude Include="LineInfo.h" />

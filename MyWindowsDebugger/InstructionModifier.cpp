@@ -1,5 +1,6 @@
 #include"InstructionModifier.h"
 #include"windowsUtillities.h"
+#include"Utillities.h"
 
 InstructionModifier::InstructionModifierDataEntry::InstructionModifierDataEntry(const std::array<unsigned char, 15>& savedinstruction, size_t sizeOfSavedInstruction) {
 	std::memcpy(this->savedInstruction.data(), savedinstruction.data(), sizeOfSavedInstruction);

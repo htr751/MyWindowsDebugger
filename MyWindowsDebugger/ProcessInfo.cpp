@@ -3,6 +3,7 @@
 #include<thread>
 #include<iostream>
 #include<ctime>
+#include"Utillities.h"
 
 ProcessInfo::ProcessInfo(const std::wstring& AbsolutePathToExe) {
 	ZeroMemory(&this->processStartUpInfo, sizeof(this->processStartUpInfo));

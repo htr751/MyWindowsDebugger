@@ -8,6 +8,7 @@
 #include"PE_Parser.h"
 #include"Utillities.h"
 #include"StackWalker.h"
+#include"Utillities.h"
 
 DebugEventHandlersManager::DebugEventHandlersManager(HANDLE processHandle, const DebugEventController& debugEventController)noexcept :m_instructionModifier(processHandle), m_debugEventController(debugEventController){
 

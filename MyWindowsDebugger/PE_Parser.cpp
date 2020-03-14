@@ -2,6 +2,8 @@
 #include<memory>
 #include"windowsUtillities.h"
 #include<iostream>
+#include"Utillities.h"
+
 static constexpr std::size_t SIZEOF_DOS_HEADER = sizeof(IMAGE_DOS_HEADER);
 static constexpr std::size_t SIZEOF_NT_HEADERS = sizeof(IMAGE_NT_HEADERS);
 

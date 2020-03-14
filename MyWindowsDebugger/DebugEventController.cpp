@@ -1,5 +1,6 @@
 #include"DebugEventController.h"
 #include"windowsUtillities.h"
+#include"Utillities.h"
 #include<stdexcept>
 
 void DebugEventController::WaitForDebugEvent(){

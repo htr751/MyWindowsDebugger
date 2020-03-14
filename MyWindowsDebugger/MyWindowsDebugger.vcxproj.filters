@@ -76,6 +76,12 @@
     <Filter Include="Source Files\UtillitiesSource\wException">
       <UniqueIdentifier>{42a414af-dd27-46c8-b0a5-648a968e219d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Commands">
+      <UniqueIdentifier>{498a4e6c-200f-4847-9fb8-b774b42f158e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CommandSource">
+      <UniqueIdentifier>{43681d22-46eb-4926-9d1d-23a35dd951e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DebuggerCore.cpp">
@@ -134,6 +140,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Commands.cpp">
+      <Filter>Source Files\CommandSource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="Utillities.h">
       <Filter>Header Files\Utillitites\FunctionalUtillities</Filter>
+    </ClInclude>
+    <ClInclude Include="Commands.h">
+      <Filter>Header Files\Commands</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

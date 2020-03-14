@@ -31,7 +31,7 @@ public:
 
 	void StartDebugging(const std::wstring& executableName);
 
-	template<typename Task, typename Stub = std::enable_if_t<DebuggerTaskTraits<Task>::value_type>>
+	template<typename Task, typename Stub = std::enable_if_t<DebuggerTaskTraits<Task>::value>>
 	decltype(auto) CreateDebuggerTask(const Task& task) {
 		std::unique_lock mutexGaurd{ this->conditionMutex };
 		this->debuggerTasks = task;

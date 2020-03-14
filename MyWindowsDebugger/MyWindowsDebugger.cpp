@@ -10,10 +10,11 @@
 #include"wRunTimeException.h"
 #include"DebuggerEventHandlingMethods.h"
 #include"windowsUtillities.h"
+#include"MyWindowsDebugger.h"
 
-int main(int argc, char** argv)
+int DebuggerThreadEntryPoint(const std::wstring& executableName)
 {
-    ProcessInfo processInformation{ L"C:\\Users\\htr751\\Documents\\C++ Projects\\DebuggingAssistent\\x64\\Debug\\DebuggingAssistent.exe" };
+    ProcessInfo processInformation{ executableName };
     DebugEventController debugLoopEventController;
     DebugEventHandlersManager debugEventManager{ processInformation.processInfo.hProcess, debugLoopEventController };
 

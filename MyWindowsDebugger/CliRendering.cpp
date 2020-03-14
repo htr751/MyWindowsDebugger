@@ -32,8 +32,8 @@ void CliRendering::RenderModuleLoadSymbolsSuccession(const std::string& moduleNa
 		std::cout << ", no debugging symbols" << std::endl;
 }
 
-void CliRendering::RenderSymbolInformation(const SymbolInfoFactory::SymbolInfo& symbolInfo, const IMAGEHLP_LINE64& symbolSourceInfo) {
+void CliRendering::RenderSymbolInformation(const SymbolInfoFactory::SymbolInfo& symbolInfo) {
 	std::cout << std::endl << "symbol " << symbolInfo.symbolName << " at address: 0x" << std::setfill('0') << std::setw(16) << std::hex << symbolInfo.symbolAddress << std::endl;
-	std::cout << "this symbol is defined at source file " << symbolSourceInfo.FileName << ":" << std::dec << symbolSourceInfo.LineNumber << std::endl;
+	std::cout << "this symbol is defined at source file " << symbolInfo.symbolSourceInfo.FileName << ":" << std::dec << symbolInfo.symbolSourceInfo.LineNumber << std::endl;
 
 }

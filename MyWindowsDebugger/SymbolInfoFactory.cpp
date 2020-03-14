@@ -2,7 +2,7 @@
 #include<memory>
 #include"windowsUtillities.h"
 
-SymbolInfoFactory::SymbolInfo::SymbolInfo(const _SYMBOL_INFO& symbolInfo) :symbolName(symbolInfo.Name){
+SymbolInfoFactory::SymbolInfo::SymbolInfo(const _SYMBOL_INFO& symbolInfo, const IMAGEHLP_LINE64& symbolSourceInfo) :symbolName(symbolInfo.Name){
 	this->flags = symbolInfo.Flags;
 	this->symbolAddress = symbolInfo.Address;
 	this->symbolIndex = symbolInfo.Index;
@@ -13,6 +13,7 @@ SymbolInfoFactory::SymbolInfo::SymbolInfo(const _SYMBOL_INFO& symbolInfo) :symbo
 	this->symbolSize = symbolInfo.Size;
 	this->symbolTag = symbolInfo.Tag;
 	this->symbolValue = symbolInfo.Value;
+	this->symbolSourceInfo = symbolSourceInfo;
 }
 
 std::optional<SymbolInfoFactory::SymbolInfo> SymbolInfoFactory::GetSymbolInfo(HANDLE processHandle, DWORD64 symbolAddr) const {
@@ -27,10 +28,14 @@ std::optional<SymbolInfoFactory::SymbolInfo> SymbolInfoFactory::GetSymbolInfo(HA
 	symbolInfo->MaxNameLen = MAX_SYM_NAME;
 
 	bool err = SymFromAddr(processHandle, symbolAddr, &displacement, symbolInfo);
-	if (!err) {
-		auto errorCode = GetLastError();
-		auto errorMessage = GetLastErrorMessage();
+	if (!err) 
 		return {};
-	}
-	return SymbolInfoFactory::SymbolInfo(*symbolInfo);
+
+	IMAGEHLP_LINE64 symbolSourceInfo = { 0 };
+	DWORD symbolSourceDisplacement = 0;
+	symbolSourceInfo.SizeOfStruct = sizeof(symbolSourceInfo);
+	if (!SymGetLineFromAddr64(processHandle, symbolAddr, &symbolSourceDisplacement, &symbolSourceInfo))
+		return {};
+
+	return SymbolInfoFactory::SymbolInfo(*symbolInfo, symbolSourceInfo);
 }

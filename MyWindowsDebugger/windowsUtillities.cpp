@@ -34,7 +34,7 @@ void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const 
 		throw wLogicException(alternativeMessage);
 }
 
-void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, InstructionModifier::InstructionAddress_t instructionAddr) {
+void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, InstructionAddress_t instructionAddr) {
 	std::array<char, 15> changedInstruction;
 	changedInstruction.fill('\xCC');
 	instructionModifier.changeInstruction(instructionAddr, changedInstruction, 1);
@@ -54,7 +54,7 @@ void RevertRipAfterBreakPointException(HANDLE hThread, InstructionModifier& inst
 	if (!err)
 		CreateRunTimeError(GetLastErrorMessage());
 	try {
-		instructionModifier.restoreInstruction((InstructionModifier::InstructionAddress_t)threadCurrentContext.Rip);
+		instructionModifier.restoreInstruction((InstructionAddress_t)threadCurrentContext.Rip);
 	}
 	catch (const wLogicException & err) { std::wcout << err.what() << std::endl; throw; }
 
@@ -95,8 +95,8 @@ std::size_t GetModuleSize(HMODULE moduleHandler, HANDLE processHandle){
 	return m_Image_Headers.OptionalHeader.SizeOfImage;
 }
 
-InstructionModifier::InstructionAddress_t GetExecutableStartAddress(HMODULE moduleHandle, HANDLE processHandle) {
+InstructionAddress_t GetExecutableStartAddress(HMODULE moduleHandle, HANDLE processHandle) {
 	PE_Parser m_PE_Parser{ moduleHandle, processHandle };
 	IMAGE_NT_HEADERS m_Image_Headers = m_PE_Parser.GetImageFileHeaders();
-	return reinterpret_cast<InstructionModifier::InstructionAddress_t>(m_Image_Headers.OptionalHeader.ImageBase + m_Image_Headers.OptionalHeader.AddressOfEntryPoint);
+	return reinterpret_cast<InstructionAddress_t>(m_Image_Headers.OptionalHeader.ImageBase + m_Image_Headers.OptionalHeader.AddressOfEntryPoint);
 }

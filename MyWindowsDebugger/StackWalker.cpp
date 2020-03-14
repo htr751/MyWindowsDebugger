@@ -30,13 +30,7 @@ void RetrieveCallStack(HANDLE threadHandle, HANDLE processHandle) {
 		if (!symbolInfo.has_value())
 			continue;
 
-		IMAGEHLP_LINE64 lineInfo = { 0 };
-		DWORD displacemnet;
-		lineInfo.SizeOfStruct = sizeof(lineInfo);
-
-		if (!SymGetLineFromAddr64(processHandle, stackFrame.AddrPC.Offset, &displacemnet, &lineInfo))
-			continue;
-		CliRendering::RenderSymbolInformation(symbolInfo.value(), lineInfo);
+		CliRendering::RenderSymbolInformation(symbolInfo.value());
 	} while (stackFrame.AddrReturn.Offset != 0);
 
 

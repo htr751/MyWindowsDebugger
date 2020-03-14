@@ -18,8 +18,8 @@ public:
 		ULONG symbolScope;
 		ULONG symbolTag;
 		std::string symbolName;
-
-		SymbolInfo(const _SYMBOL_INFO& symbolInfo);
+		IMAGEHLP_LINE64 symbolSourceInfo;
+		SymbolInfo(const _SYMBOL_INFO& symbolInfo, const IMAGEHLP_LINE64& symbolSourceInfo);
 	};
 
 	SymbolInfoFactory() = default;

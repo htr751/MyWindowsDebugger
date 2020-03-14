@@ -10,7 +10,7 @@ InstructionModifier::InstructionModifier(HANDLE processHandle) noexcept {
 	this->processHandle = processHandle;
 }
 
-void InstructionModifier::changeInstruction(InstructionModifier::InstructionAddress_t instructionAddr, const std::array<char, 15>& newInstruction, size_t sizeOfChangedInstruction) {
+void InstructionModifier::changeInstruction(InstructionAddress_t instructionAddr, const std::array<char, 15>& newInstruction, size_t sizeOfChangedInstruction) {
 	//this function doesn't saves history of changes.
 	//An instruction that has been changed already cant be changed again until it will be restored to its previous state
 	if (this->modifiedInstructions.find(instructionAddr) != this->modifiedInstructions.cend())

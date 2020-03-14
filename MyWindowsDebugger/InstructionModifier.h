@@ -2,11 +2,9 @@
 #include<unordered_map>
 #include<array>
 #include<Windows.h>
+using InstructionAddress_t = void*;
 
 class InstructionModifier {
-public:
-	using InstructionAddress_t = void*;
-private:
 	struct InstructionModifierDataEntry {
 		std::array<unsigned char, 15> savedInstruction;
 		size_t sizeOfSavedInstruction;
@@ -20,6 +18,6 @@ private:
 public:
 
 	InstructionModifier(HANDLE processHandle) noexcept;
-	void changeInstruction(InstructionModifier::InstructionAddress_t instructionAddr, const std::array<char, 15>& newInstruction, size_t sizeOfChangedInstruction);
+	void changeInstruction(InstructionAddress_t instructionAddr, const std::array<char, 15>& newInstruction, size_t sizeOfChangedInstruction);
 	void restoreInstruction(InstructionAddress_t instructionAddr);
 };

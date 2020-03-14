@@ -53,7 +53,7 @@ void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_D
 		
 	//setting break point at the start address of the thread
 	
-	InstructionModifier::InstructionAddress_t threadStartAddress = GetExecutableStartAddress((HMODULE)event.lpBaseOfImage, event.hProcess);
+	InstructionAddress_t threadStartAddress = GetExecutableStartAddress((HMODULE)event.lpBaseOfImage, event.hProcess);
 	ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
 }
 

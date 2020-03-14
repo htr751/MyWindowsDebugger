@@ -13,132 +13,195 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\DebuggerModule">
+      <UniqueIdentifier>{991f1360-e8b2-4679-85af-20688de97373}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebuggerModule\DebuggerEventHandling">
+      <UniqueIdentifier>{ce4bfed2-2315-48d5-b92f-c897bed3c907}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebuggerCore">
+      <UniqueIdentifier>{53bb84ff-d2f8-4417-9980-a700d62217aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebuggerModule\DebuggerUtillities">
+      <UniqueIdentifier>{bbe7e5cd-828b-4e4d-bbb1-3623f1cbd3e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebuggerModule\Win32Wrappers">
+      <UniqueIdentifier>{3b0a3225-aed6-48fb-9812-ded758bf63d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CliModule">
+      <UniqueIdentifier>{7d7e0f88-8670-4a8f-b7c0-a411ac99c004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DebuggerCoreSource">
+      <UniqueIdentifier>{9eecd3b5-5a25-4a54-84db-1bf9fa77062f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DebuggerModuleSource">
+      <UniqueIdentifier>{7924e6a2-57ac-43d8-bba2-864d6c8c736e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DebuggerModuleSource\DebuggerUtillitisSource">
+      <UniqueIdentifier>{2a8ca2c8-4d72-4253-afaf-4a2c141950bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DebuggerModuleSource\DebuggerEventHandlingSource">
+      <UniqueIdentifier>{6847f926-e5f7-471d-81db-a3c65d8ee95c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DebuggerModuleSource\Utillities">
+      <UniqueIdentifier>{80fe32f0-316c-4d60-9468-0511c33e244e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebuggerModule\DebuggerUtillitis">
+      <UniqueIdentifier>{ec6de137-d57b-41b4-8052-29d4c017353f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utillitites">
+      <UniqueIdentifier>{e88da8f0-7c03-4c97-a650-62a788103935}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utillitites\Types">
+      <UniqueIdentifier>{b31c7d26-ef72-4304-bda7-c2065c230e8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utillitites\FunctionalUtillities">
+      <UniqueIdentifier>{d8326f51-f2b5-4154-85e9-7983be67d81d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utillitites\wException">
+      <UniqueIdentifier>{074573f4-ca5b-4b02-a892-8b44b1c5ae82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DebuggerModuleSource\Win32Wrappers">
+      <UniqueIdentifier>{9caecd08-f427-47d5-944e-89e1bc4c28bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UtillitiesSource">
+      <UniqueIdentifier>{fcb349ef-73b8-4b28-90e7-8554a3455f43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UtillitiesSource\FunctionalUtillities">
+      <UniqueIdentifier>{fed47879-0ad3-41e4-a876-6d9c21163df8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UtillitiesSource\TypesSource">
+      <UniqueIdentifier>{5a066c5e-ff47-4df4-8833-736486a8a859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UtillitiesSource\wException">
+      <UniqueIdentifier>{42a414af-dd27-46c8-b0a5-648a968e219d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MyWindowsDebugger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FileHandle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProcessInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="windowsUtillities.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugEvent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugEventController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wRunTimeException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wLogicException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DebuggerEventHandlingMethods.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InstructionModifier.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CliRendering.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PE_Parser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StackWalker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SymbolInfoFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewLayer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="DebuggerCore.cpp">
+      <Filter>Source Files\DebuggerCoreSource</Filter>
     </ClCompile>
     <ClCompile Include="DebuggerTasks.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\DebuggerCoreSource</Filter>
+    </ClCompile>
+    <ClCompile Include="InstructionModifier.cpp">
+      <Filter>Source Files\DebuggerModuleSource\DebuggerUtillitisSource</Filter>
+    </ClCompile>
+    <ClCompile Include="PE_Parser.cpp">
+      <Filter>Source Files\DebuggerModuleSource\DebuggerUtillitisSource</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugEvent.cpp">
+      <Filter>Source Files\DebuggerModuleSource\DebuggerEventHandlingSource</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugEventController.cpp">
+      <Filter>Source Files\DebuggerModuleSource\DebuggerEventHandlingSource</Filter>
+    </ClCompile>
+    <ClCompile Include="DebuggerEventHandlingMethods.cpp">
+      <Filter>Source Files\DebuggerModuleSource\DebuggerEventHandlingSource</Filter>
+    </ClCompile>
+    <ClCompile Include="windowsUtillities.cpp">
+      <Filter>Source Files\DebuggerModuleSource\Utillities</Filter>
+    </ClCompile>
+    <ClCompile Include="FileHandle.cpp">
+      <Filter>Source Files\DebuggerModuleSource\Win32Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessInfo.cpp">
+      <Filter>Source Files\DebuggerModuleSource\Win32Wrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="CliRendering.cpp">
+      <Filter>Source Files\DebuggerModuleSource</Filter>
+    </ClCompile>
+    <ClCompile Include="MyWindowsDebugger.cpp">
+      <Filter>Source Files\DebuggerModuleSource</Filter>
     </ClCompile>
     <ClCompile Include="Utillities.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\UtillitiesSource\FunctionalUtillities</Filter>
     </ClCompile>
-    <ClCompile Include="DebuggerCore.cpp">
+    <ClCompile Include="StackWalker.cpp">
+      <Filter>Source Files\UtillitiesSource\TypesSource</Filter>
+    </ClCompile>
+    <ClCompile Include="SymbolInfoFactory.cpp">
+      <Filter>Source Files\UtillitiesSource\TypesSource</Filter>
+    </ClCompile>
+    <ClCompile Include="wException.cpp">
+      <Filter>Source Files\UtillitiesSource\wException</Filter>
+    </ClCompile>
+    <ClCompile Include="wLogicException.cpp">
+      <Filter>Source Files\UtillitiesSource\wException</Filter>
+    </ClCompile>
+    <ClCompile Include="wRunTimeException.cpp">
+      <Filter>Source Files\UtillitiesSource\wException</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FileHandle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="windowsUtillities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="overload.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugEventController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugEvent.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DebuggerModule\DebuggerUtillitis</Filter>
     </ClInclude>
     <ClInclude Include="wException.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="wRunTimeException.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utillitites\wException</Filter>
     </ClInclude>
     <ClInclude Include="wLogicException.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utillitites\wException</Filter>
+    </ClInclude>
+    <ClInclude Include="wRunTimeException.h">
+      <Filter>Header Files\Utillitites\wException</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugEventController.h">
+      <Filter>Header Files\DebuggerModule\DebuggerEventHandling</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugEvent.h">
+      <Filter>Header Files\DebuggerModule\DebuggerEventHandling</Filter>
     </ClInclude>
     <ClInclude Include="DebuggerEventHandlingMethods.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InstructionModifier.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CliRendering.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PE_Parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utillities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StackWalker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SymbolInfoFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MyWindowsDebugger.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DebuggerModule\DebuggerEventHandling</Filter>
     </ClInclude>
     <ClInclude Include="DebuggerCore.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DebuggerTasks.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LineInfo.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DebuggerCore</Filter>
     </ClInclude>
     <ClInclude Include="DebuggerMessages.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DebuggerCore</Filter>
+    </ClInclude>
+    <ClInclude Include="DebuggerTasks.h">
+      <Filter>Header Files\DebuggerCore</Filter>
     </ClInclude>
     <ClInclude Include="DebuggerTaskTraits.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\DebuggerCore</Filter>
+    </ClInclude>
+    <ClInclude Include="FileHandle.h">
+      <Filter>Header Files\DebuggerModule\Win32Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessInfo.h">
+      <Filter>Header Files\DebuggerModule\Win32Wrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="InstructionModifier.h">
+      <Filter>Header Files\DebuggerModule\DebuggerUtillities</Filter>
+    </ClInclude>
+    <ClInclude Include="PE_Parser.h">
+      <Filter>Header Files\DebuggerModule\DebuggerUtillities</Filter>
+    </ClInclude>
+    <ClInclude Include="MyWindowsDebugger.h">
+      <Filter>Header Files\DebuggerModule</Filter>
+    </ClInclude>
+    <ClInclude Include="CliRendering.h">
+      <Filter>Header Files\DebuggerModule</Filter>
+    </ClInclude>
+    <ClInclude Include="StackWalker.h">
+      <Filter>Header Files\Utillitites\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="SymbolInfoFactory.h">
+      <Filter>Header Files\Utillitites\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="LineInfo.h">
+      <Filter>Header Files\Utillitites\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="overload.h">
+      <Filter>Header Files\Utillitites\FunctionalUtillities</Filter>
+    </ClInclude>
+    <ClInclude Include="Utillities.h">
+      <Filter>Header Files\Utillitites\FunctionalUtillities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

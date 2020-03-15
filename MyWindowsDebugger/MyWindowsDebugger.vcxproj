@@ -154,7 +154,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CliRendering.cpp" />
+    <ClCompile Include="CliUtillities.cpp" />
     <ClCompile Include="CommandParser.cpp" />
+    <ClCompile Include="CommandsExecuter.cpp" />
     <ClCompile Include="DebugEvent.cpp" />
     <ClCompile Include="DebugEventController.cpp" />
     <ClCompile Include="DebuggerCore.cpp" />
@@ -162,6 +164,7 @@
     <ClCompile Include="DebuggerTasks.cpp" />
     <ClCompile Include="FileHandle.cpp" />
     <ClCompile Include="InstructionModifier.cpp" />
+    <ClCompile Include="LineInfo.cpp" />
     <ClCompile Include="MyWindowsDebugger.cpp" />
     <ClCompile Include="PE_Parser.cpp" />
     <ClCompile Include="ProcessInfo.cpp" />
@@ -175,11 +178,15 @@
     <ClCompile Include="wRunTimeException.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BreakPointNotFoundException.h" />
     <ClInclude Include="CliRendering.h" />
+    <ClInclude Include="CliUtillities.h" />
     <ClInclude Include="CommandParser.h" />
+    <ClInclude Include="CommandsExecuter.h" />
     <ClInclude Include="DebugEvent.h" />
     <ClInclude Include="DebugEventController.h" />
     <ClInclude Include="DebuggerCore.h" />
+    <ClInclude Include="DebuggerCoreTypes.h" />
     <ClInclude Include="DebuggerEventHandlingMethods.h" />
     <ClInclude Include="DebuggerMessages.h" />
     <ClInclude Include="DebuggerTasks.h" />

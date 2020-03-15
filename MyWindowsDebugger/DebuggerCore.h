@@ -14,24 +14,20 @@
 #include"DebuggerTaskTraits.h"
 #include<type_traits>
 #include<memory>
+#include"DebuggerCoreTypes.h"
 
 class DebuggerCore {
 	mutable std::thread m_debuggerThread;
-
-	using DebuggerTasksContainer = std::variant<StackTraceTask, SymbolInforamtionTask, ContextInformationTask, SetBreakPointTask, RemoveBreakPointTask,
-		ContinueTask, StepIntoTask, StepTask, ExitTask>;
 
 	std::unique_ptr<DebuggerTasksContainer> debuggerTasks;
 	mutable std::mutex conditionMutex;
 	mutable std::condition_variable hasTaskVariable;
 	mutable bool hasTaskCondition;
 
-	std::queue<std::variant<OutputMessage, CreateProcessMessage, ProcessExitMessage, CreateThreadMessage,
-		ThreadExitMessage, LoadDllMessage, UnLoadDllMessage, BreakPointMessage, ExceptionMessage>> debuggerMessages;
+	std::queue<DebuggerMessagesContainer> debuggerMessages;
 	mutable std::mutex debuggerMessagesMutex;
 
 public:
-
 	void StartDebugging(const std::wstring& executableName);
 	bool CheckForDebuggerMessage() const;
 	StackTraceData GetStackTrace();

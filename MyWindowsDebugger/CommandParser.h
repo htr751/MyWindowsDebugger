@@ -1,5 +1,8 @@
 #pragma once
 #include<string>
-#include<list>
+#include<vector>
+#include"DebuggerCoreTypes.h"
+#include"DebuggerCore.h"
 
-std::list<std::string> TokenizeCommand(const std::string& command);
+std::vector<std::string> TokenizeCommand(const std::string& command);
+DebuggerResponse executeCommand(DebuggerCore& debuggerCore, const std::vector<std::string>& command);

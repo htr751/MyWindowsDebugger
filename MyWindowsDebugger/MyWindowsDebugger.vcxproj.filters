@@ -46,9 +46,6 @@
     <Filter Include="Source Files\DebuggerModuleSource\Utillities">
       <UniqueIdentifier>{80fe32f0-316c-4d60-9468-0511c33e244e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\DebuggerModule\DebuggerUtillitis">
-      <UniqueIdentifier>{ec6de137-d57b-41b4-8052-29d4c017353f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Utillitites">
       <UniqueIdentifier>{e88da8f0-7c03-4c97-a650-62a788103935}</UniqueIdentifier>
     </Filter>
@@ -141,11 +138,17 @@
     <ClCompile Include="CommandParser.cpp">
       <Filter>Source Files\CliModuleSource</Filter>
     </ClCompile>
+    <ClCompile Include="CommandsExecuter.cpp">
+      <Filter>Source Files\CliModuleSource</Filter>
+    </ClCompile>
+    <ClCompile Include="LineInfo.cpp">
+      <Filter>Source Files\UtillitiesSource\TypesSource</Filter>
+    </ClCompile>
+    <ClCompile Include="CliUtillities.cpp">
+      <Filter>Source Files\CliModuleSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="windowsUtillities.h">
-      <Filter>Header Files\DebuggerModule\DebuggerUtillitis</Filter>
-    </ClInclude>
     <ClInclude Include="wException.h">
       <Filter>Header Files\Utillitites\wException</Filter>
     </ClInclude>
@@ -214,6 +217,21 @@
     </ClInclude>
     <ClInclude Include="inputRange.h">
       <Filter>Header Files\Utillitites\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="windowsUtillities.h">
+      <Filter>Header Files\DebuggerModule\DebuggerUtillities</Filter>
+    </ClInclude>
+    <ClInclude Include="DebuggerCoreTypes.h">
+      <Filter>Header Files\DebuggerCore</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandsExecuter.h">
+      <Filter>Header Files\CliModule</Filter>
+    </ClInclude>
+    <ClInclude Include="CliUtillities.h">
+      <Filter>Header Files\CliModule</Filter>
+    </ClInclude>
+    <ClInclude Include="BreakPointNotFoundException.h">
+      <Filter>Header Files\Utillitites\wException</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

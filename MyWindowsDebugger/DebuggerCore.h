@@ -30,25 +30,16 @@ class DebuggerCore {
 public:
 
 	void StartDebugging(const std::wstring& executableName);
-
-	template<typename Task, typename Stub = std::enable_if_t<DebuggerTaskTraits<Task>::value>>
-	decltype(auto) CreateDebuggerTask(const Task& task) {
-		std::unique_lock mutexGaurd{ this->conditionMutex };
-		this->debuggerTasks = task;
-		this->hasTaskCondition = true;
-		this->hasTaskVariable.notify_one();
-		mutexGaurd.unlock();
-
-		typename Task::TaskRespone taskStatus;
-		std::visit(overload{
-			[&taskStatus](typename Task::TaskRespone& task) {taskStatus = task.GetTaskData(); }, 
-			[](auto&& task) {}
-			}, 
-			this->debuggerTasks);
-		return taskStatus;
-	}
-
 	bool CheckForDebuggerMessage() const;
+	StackTraceData GetStackTrace();
+	SymbolInfoFactory::SymbolInfo GetSymbolInformation(const std::string& symbolName);
+	CONTEXT GetContext();
+	bool SetBreakPoint(const LineInfo& lineInfo);
+	bool RemoveBreakPoint(const LineInfo& lineInfo);
+	bool ContinueExecution();
+	bool StepInto();
+	bool Step();
+	bool StopDebugging();
 
 	template<typename... MessageHandlers>
 	void HandleDebuggerMessages(const overload<MessageHandlers...>& messageHandlers) {
@@ -59,6 +50,24 @@ public:
 
 		for (auto& message : debuggerMessages)
 			std::visit(messageHandlers, message);
+	}
+
+private:
+	template<typename Task, typename Stub = std::enable_if_t<DebuggerTaskTraits<Task>::value>>
+	decltype(auto) CreateDebuggerTask(const Task& task) {
+		std::unique_lock mutexGaurd{ this->conditionMutex };
+		this->debuggerTasks = task;
+		this->hasTaskCondition = true;
+		this->hasTaskVariable.notify_one();
+		mutexGaurd.unlock();
+
+		typename Task::TaskRespone taskStatus;
+		std::visit(overload{
+			[&taskStatus](typename Task::TaskRespone& task) {taskStatus = task.GetTaskData(); },
+			[](auto&& task) {}
+			},
+			this->debuggerTasks);
+		return taskStatus;
 	}
 
 };

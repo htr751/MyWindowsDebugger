@@ -11,3 +11,39 @@ bool DebuggerCore::CheckForDebuggerMessage() const {
 		return false;
 	return true;
 }
+
+StackTraceData DebuggerCore::GetStackTrace() {
+	return this->CreateDebuggerTask(StackTraceTask());
+}
+
+SymbolInfoFactory::SymbolInfo DebuggerCore::GetSymbolInformation(const std::string& symbolName) {
+	return this->CreateDebuggerTask(SymbolInforamtionTask(symbolName));
+}
+
+CONTEXT DebuggerCore::GetContext() {
+	return this->CreateDebuggerTask(ContextInformationTask());
+}
+
+bool DebuggerCore::SetBreakPoint(const LineInfo& lineInfo) {
+	return this->CreateDebuggerTask(SetBreakPointTask(lineInfo));
+}
+
+bool DebuggerCore::RemoveBreakPoint(const LineInfo& lineInfo) {
+	return this->CreateDebuggerTask(RemoveBreakPointTask(lineInfo));
+}
+
+bool DebuggerCore::ContinueExecution() {
+	return this->CreateDebuggerTask(ContinueTask());
+}
+
+bool DebuggerCore::StepInto() {
+	return this->CreateDebuggerTask(StepIntoTask());
+}
+
+bool DebuggerCore::Step() {
+	return this->CreateDebuggerTask(StepTask());
+}
+
+bool DebuggerCore::StopDebugging() {
+	return this->CreateDebuggerTask(ExitTask());
+}

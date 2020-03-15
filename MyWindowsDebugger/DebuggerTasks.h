@@ -36,21 +36,21 @@ public:
 
 class ContextInformationTask : public DebuggerTask<CONTEXT, ContextInformationTask> {};
 
-class SetBreakPointTask : public DebuggerTask<OperationStatus, SetBreakPointTask> {
+class SetBreakPointTask : public DebuggerTask<bool, SetBreakPointTask> {
 	LineInfo instructionSourceInfo;
 public:
 	SetBreakPointTask(const LineInfo& instructionInfo);
 	const LineInfo& GetInstructionInfo() const ;
 };
 
-class RemoveBreakPointTask : public DebuggerTask<OperationStatus, RemoveBreakPointTask> {
+class RemoveBreakPointTask : public DebuggerTask<bool, RemoveBreakPointTask> {
 	LineInfo instructionSourceInfo;
 public:
 	RemoveBreakPointTask(const LineInfo& instructionInfo);
 	const LineInfo& GetInstructionInfo() const;
 };
 
-class ContinueTask : public DebuggerTask<OperationStatus, ContinueTask> {};
-class StepIntoTask : public DebuggerTask<OperationStatus, StepIntoTask> {};
-class StepTask : public DebuggerTask<OperationStatus, StepTask> {};
-class ExitTask : public DebuggerTask<OperationStatus, ExitTask> {};
+class ContinueTask : public DebuggerTask<bool, ContinueTask> {};
+class StepIntoTask : public DebuggerTask<bool, StepIntoTask> {};
+class StepTask : public DebuggerTask<bool, StepTask> {};
+class ExitTask : public DebuggerTask<bool, ExitTask> {};

@@ -6,7 +6,6 @@
 #include<queue>
 
 using InstructionAddress_t = void*;
-enum class OperationStatus { SUCCEDED, FAILED };
 
 std::string wstringTostring(const std::wstring& str);
 std::wstring stringTowstring(const std::string& str);

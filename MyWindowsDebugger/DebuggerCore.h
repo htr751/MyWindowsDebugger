@@ -13,12 +13,15 @@
 #include"overload.h"
 #include"DebuggerTaskTraits.h"
 #include<type_traits>
+#include<memory>
 
 class DebuggerCore {
 	mutable std::thread m_debuggerThread;
 
-	std::variant<StackTraceTask, SymbolInforamtionTask, ContextInformationTask, SetBreakPointTask, RemoveBreakPointTask,
-		ContinueTask, StepIntoTask, StepTask, ExitTask> debuggerTasks;
+	using DebuggerTasksContainer = std::variant<StackTraceTask, SymbolInforamtionTask, ContextInformationTask, SetBreakPointTask, RemoveBreakPointTask,
+		ContinueTask, StepIntoTask, StepTask, ExitTask>;
+
+	std::unique_ptr<DebuggerTasksContainer> debuggerTasks;
 	mutable std::mutex conditionMutex;
 	mutable std::condition_variable hasTaskVariable;
 	mutable bool hasTaskCondition;
@@ -54,20 +57,20 @@ public:
 
 private:
 	template<typename Task, typename Stub = std::enable_if_t<DebuggerTaskTraits<Task>::value>>
-	decltype(auto) CreateDebuggerTask(const Task& task) {
+	decltype(auto) CreateDebuggerTask(Task&& task) {
 		std::unique_lock mutexGaurd{ this->conditionMutex };
-		this->debuggerTasks = task;
+		this->debuggerTasks = std::make_unique<DebuggerTasksContainer>(std::move(task));
 		this->hasTaskCondition = true;
 		this->hasTaskVariable.notify_one();
 		mutexGaurd.unlock();
 
-		typename Task::TaskRespone taskStatus;
+		typename Task::TaskRespone taskRespone;
 		std::visit(overload{
-			[&taskStatus](typename Task::TaskRespone& task) {taskStatus = task.GetTaskData(); },
+			[&taskRespone](Task& task) {taskRespone = task.GetTaskData(); },
 			[](auto&& task) {}
 			},
-			this->debuggerTasks);
-		return taskStatus;
+			*this->debuggerTasks.get());
+		return taskRespone;
 	}
 
 };

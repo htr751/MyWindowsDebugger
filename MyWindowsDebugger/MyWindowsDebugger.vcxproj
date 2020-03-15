@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CliRendering.cpp" />
+    <ClCompile Include="CommandParser.cpp" />
     <ClCompile Include="DebugEvent.cpp" />
     <ClCompile Include="DebugEventController.cpp" />
     <ClCompile Include="DebuggerCore.cpp" />
@@ -175,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CliRendering.h" />
+    <ClInclude Include="CommandParser.h" />
     <ClInclude Include="DebugEvent.h" />
     <ClInclude Include="DebugEventController.h" />
     <ClInclude Include="DebuggerCore.h" />
@@ -183,6 +185,7 @@
     <ClInclude Include="DebuggerTasks.h" />
     <ClInclude Include="DebuggerTaskTraits.h" />
     <ClInclude Include="FileHandle.h" />
+    <ClInclude Include="inputRange.h" />
     <ClInclude Include="InstructionModifier.h" />
     <ClInclude Include="LineInfo.h" />
     <ClInclude Include="MyWindowsDebugger.h" />

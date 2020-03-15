@@ -20,7 +20,12 @@ public:
 		std::string symbolName;
 		IMAGEHLP_LINE64 symbolSourceInfo;
 		SymbolInfo(const _SYMBOL_INFO& symbolInfo, const IMAGEHLP_LINE64& symbolSourceInfo);
+
 		SymbolInfo() = default;
+		SymbolInfo(const SymbolInfo&) = default;
+		SymbolInfo(SymbolInfo&&) = default;
+		SymbolInfo& operator=(SymbolInfo&&) = default;
+		SymbolInfo& operator=(const SymbolInfo& other) = default;
 	};
 
 	SymbolInfoFactory() = default;

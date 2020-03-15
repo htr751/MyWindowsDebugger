@@ -11,12 +11,13 @@
 template<typename TaskData, typename Task>
 class DebuggerTask {
 	std::promise<TaskData> taskData;
-	using TaskRespone = TaskData;
 public:
-	DebuggerTask() = default;
+	using TaskRespone = TaskData;
+
 	TaskData GetTaskData() { return this->taskData.get_future().get(); }
 	void setTaskData(const TaskData& taskData) { this->taskData.set_value(taskData); }
 	Task& getFullTask() { return static_cast<Task&>(*this); }
+
 };
 
 struct StackTraceData {
@@ -31,6 +32,13 @@ class SymbolInforamtionTask : public DebuggerTask<SymbolInfoFactory::SymbolInfo,
 public:
 	SymbolInforamtionTask(const std::string& symbolName);
 	SymbolInforamtionTask(std::string&& symbolName);
+	SymbolInforamtionTask() = delete;
+	SymbolInforamtionTask(const SymbolInforamtionTask&) = default;
+	SymbolInforamtionTask(SymbolInforamtionTask&&) = default;
+	SymbolInforamtionTask& operator=(SymbolInforamtionTask&&) = default;
+	SymbolInforamtionTask& operator=(const SymbolInforamtionTask&) = default;
+	~SymbolInforamtionTask() = default;
+
 	const std::string& GetSymbolName() const;
 };
 
@@ -40,6 +48,13 @@ class SetBreakPointTask : public DebuggerTask<bool, SetBreakPointTask> {
 	LineInfo instructionSourceInfo;
 public:
 	SetBreakPointTask(const LineInfo& instructionInfo);
+	SetBreakPointTask() = delete;
+	SetBreakPointTask(const SetBreakPointTask&) = default;
+	SetBreakPointTask(SetBreakPointTask&&) = default;
+	SetBreakPointTask& operator=(SetBreakPointTask&&) = default;
+	SetBreakPointTask& operator=(const SetBreakPointTask&) = default;
+	~SetBreakPointTask() = default;
+
 	const LineInfo& GetInstructionInfo() const ;
 };
 
@@ -47,6 +62,13 @@ class RemoveBreakPointTask : public DebuggerTask<bool, RemoveBreakPointTask> {
 	LineInfo instructionSourceInfo;
 public:
 	RemoveBreakPointTask(const LineInfo& instructionInfo);
+	RemoveBreakPointTask() = delete;
+	RemoveBreakPointTask(const RemoveBreakPointTask&) = default;
+	RemoveBreakPointTask(RemoveBreakPointTask&&) = default;
+	RemoveBreakPointTask& operator=(const RemoveBreakPointTask&) = default;
+	RemoveBreakPointTask& operator=(RemoveBreakPointTask&&) = default;
+	~RemoveBreakPointTask() = default;
+
 	const LineInfo& GetInstructionInfo() const;
 };
 

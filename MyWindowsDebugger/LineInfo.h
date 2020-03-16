@@ -3,13 +3,13 @@
 
 struct LineInfo {
 	std::string m_fileName;
-	int m_lineNumber;
+	unsigned long m_lineNumber;
 
-	LineInfo(std::string fileName, int LineNumber);
-	LineInfo()noexcept = default;
-	LineInfo(const LineInfo&)noexcept = default;
-	LineInfo(LineInfo&&)noexcept = default;
+	LineInfo(std::string fileName, unsigned long LineNumber);
+	LineInfo() = default;
+	LineInfo(const LineInfo&) = default;
+	LineInfo(LineInfo&&) = default;
 	LineInfo& operator=(const LineInfo&) = default;
 	LineInfo& operator=(LineInfo&&) = default;
-	~LineInfo() noexcept = default;
+	~LineInfo() = default;
 };

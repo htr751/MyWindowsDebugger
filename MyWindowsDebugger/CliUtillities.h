@@ -6,9 +6,9 @@
 
 struct BreakPointCommandInformation {
 	std::string m_functionName;
-	int m_functionLineNumber;
+	unsigned long m_functionLineNumber;
 
-	BreakPointCommandInformation(std::string functionName, int functionLineNumber);
+	BreakPointCommandInformation(std::string functionName, unsigned long functionLineNumber);
 };
 
 BreakPointCommandInformation GetBreakPointCommandInformation(const std::string& command, DebuggerCore& debuggerCore);

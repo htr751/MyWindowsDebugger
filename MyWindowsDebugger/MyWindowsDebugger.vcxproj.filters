@@ -43,9 +43,6 @@
     <Filter Include="Source Files\DebuggerModuleSource\DebuggerEventHandlingSource">
       <UniqueIdentifier>{6847f926-e5f7-471d-81db-a3c65d8ee95c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\DebuggerModuleSource\Utillities">
-      <UniqueIdentifier>{80fe32f0-316c-4d60-9468-0511c33e244e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Utillitites">
       <UniqueIdentifier>{e88da8f0-7c03-4c97-a650-62a788103935}</UniqueIdentifier>
     </Filter>
@@ -99,9 +96,6 @@
     <ClCompile Include="DebuggerEventHandlingMethods.cpp">
       <Filter>Source Files\DebuggerModuleSource\DebuggerEventHandlingSource</Filter>
     </ClCompile>
-    <ClCompile Include="windowsUtillities.cpp">
-      <Filter>Source Files\DebuggerModuleSource\Utillities</Filter>
-    </ClCompile>
     <ClCompile Include="FileHandle.cpp">
       <Filter>Source Files\DebuggerModuleSource\Win32Wrappers</Filter>
     </ClCompile>
@@ -146,6 +140,12 @@
     </ClCompile>
     <ClCompile Include="CliUtillities.cpp">
       <Filter>Source Files\CliModuleSource</Filter>
+    </ClCompile>
+    <ClCompile Include="windowsUtillities.cpp">
+      <Filter>Source Files\DebuggerModuleSource\DebuggerUtillitisSource</Filter>
+    </ClCompile>
+    <ClCompile Include="SourceFileInfo.cpp">
+      <Filter>Source Files\DebuggerModuleSource\DebuggerUtillitisSource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="BreakPointNotFoundException.h">
       <Filter>Header Files\Utillitites\wException</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceFileInfo.h">
+      <Filter>Header Files\DebuggerModule\DebuggerUtillities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

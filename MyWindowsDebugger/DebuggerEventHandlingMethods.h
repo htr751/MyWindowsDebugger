@@ -1,11 +1,16 @@
 #pragma once
 #include<Windows.h>
 #include<unordered_map>
+#include<vector>
+#include<DbgHelp.h>
+#include<memory>
 #include"DebugEventController.h"
 #include"windowsUtillities.h"
 #include"InstructionModifier.h"
 #include"ProcessInfo.h"
 #include"CliRendering.h"
+#include"SourceFileInfo.h"
+
 
 class DebugEventHandlersManager {
 	std::unordered_map<ThreadID_t, ThreadInfo_t> threadIdToInfoMap;
@@ -13,9 +18,12 @@ class DebugEventHandlersManager {
 	InstructionModifier m_instructionModifier;
 	const DebugEventController& m_debugEventController;
 	CREATE_PROCESS_DEBUG_INFO createProcessInfo = { 0 };
+	std::vector<std::unique_ptr<SourceFileInfo>> sourceFilesInfomration;
+
 
 public:
 	DebugEventHandlersManager(HANDLE processHandle, const DebugEventController& debugEventController) noexcept;
+	void AddSourceFile(PSOURCEFILE sourceFileInfo);
 
 	void OutputDebugStringEventHandler(const OUTPUT_DEBUG_STRING_INFO& event, const ProcessInfo& processInfo);
 	void CreateProcessEventHandler(const CREATE_PROCESS_DEBUG_INFO& event);

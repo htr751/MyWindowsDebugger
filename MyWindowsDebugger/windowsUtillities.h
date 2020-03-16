@@ -6,6 +6,7 @@
 #include<iostream>
 #include<functional>
 #include<Psapi.h>
+#include<DbgHelp.h>
 #include"wLogicException.h"
 #include"wRunTimeException.h"
 #include"InstructionModifier.h"
@@ -39,3 +40,6 @@ void DisplayCpuRegisters(HANDLE hThread, RenderFunction&& renderFunc) {
 MODULEINFO GetModuleInfo(HANDLE processHandle, HMODULE module);
 struct _IMAGEHLP_MODULE64 LoadModuleSymbols(HANDLE processHandle, HANDLE fileHandle, PCSTR imageName, DWORD64 baseOfImage, DWORD64 sizeOfImage);
 std::size_t GetModuleSize(HMODULE moduleHandler, HANDLE processHandle);
+
+BOOL __stdcall EnumSourceFilesProc(PSOURCEFILE sourceFileInfo, PVOID userContext);
+BOOL __stdcall EnumLinesProc(PSRCCODEINFO LineInfo, PVOID UserContext);

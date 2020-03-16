@@ -26,7 +26,7 @@ bool CommandsExecuter::ExecuteSetBreakPointCommand(const std::vector<std::string
 		CreateRunTimeError(L"breakpoint command should have line information argument in the format FunctionName[optional]:lineNumber");
 	const auto functionInformation = GetBreakPointCommandInformation(arguments[0], this->m_debuggerCore);
 	LineInfo breakPointInformation{ functionInformation.m_functionName, functionInformation.m_functionLineNumber};
-	this->m_debuggerCore.SetBreakPoint(breakPointInformation);
+	return this->m_debuggerCore.SetBreakPoint(breakPointInformation);
 }
 
 bool CommandsExecuter::ExecuteRemoveBreakPointCommand(const std::vector<std::string>& arguments) {
@@ -35,27 +35,27 @@ bool CommandsExecuter::ExecuteRemoveBreakPointCommand(const std::vector<std::str
 	const auto functionInformation = GetBreakPointCommandInformation(arguments[0], this->m_debuggerCore);
 	LineInfo breakPointInformation{ functionInformation.m_functionName, functionInformation.m_functionLineNumber };
 
-	this->m_debuggerCore.RemoveBreakPoint(breakPointInformation);
+	return this->m_debuggerCore.RemoveBreakPoint(breakPointInformation);
 }
 
 bool CommandsExecuter::ExecuteContinueCommand(const std::vector<std::string>& arguments) {
 	if (!arguments.empty())
 		CreateRunTimeError(L"continue command shouln't have arguments");
-	this->m_debuggerCore.ContinueExecution();
+	return this->m_debuggerCore.ContinueExecution();
 }
 
 bool CommandsExecuter::ExecuteStepCommand(const std::vector<std::string>& arguments) {
 	if (!arguments.empty())
 		CreateRunTimeError(L"continue command shouln't have arguments");
-	this->m_debuggerCore.Step();
+	return this->m_debuggerCore.Step();
 }
 bool CommandsExecuter::ExecuteStepIntoCommand(const std::vector<std::string>& arguments) {
 	if (!arguments.empty())
 		CreateRunTimeError(L"continue command shouln't have arguments");
-	this->m_debuggerCore.StepInto();
+	return this->m_debuggerCore.StepInto();
 }
 bool CommandsExecuter::ExecuteStopDebuggingCommand(const std::vector<std::string>& arguments) {
 	if (!arguments.empty())
 		CreateRunTimeError(L"continue command shouln't have arguments");
-	this->m_debuggerCore.StopDebugging();
+	return this->m_debuggerCore.StopDebugging();
 }

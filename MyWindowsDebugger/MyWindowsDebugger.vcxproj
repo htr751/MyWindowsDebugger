@@ -168,6 +168,7 @@
     <ClCompile Include="MyWindowsDebugger.cpp" />
     <ClCompile Include="PE_Parser.cpp" />
     <ClCompile Include="ProcessInfo.cpp" />
+    <ClCompile Include="SourceFileInfo.cpp" />
     <ClCompile Include="StackWalker.cpp" />
     <ClCompile Include="SymbolInfoFactory.cpp" />
     <ClCompile Include="Utillities.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="overload.h" />
     <ClInclude Include="PE_Parser.h" />
     <ClInclude Include="ProcessInfo.h" />
+    <ClInclude Include="SourceFileInfo.h" />
     <ClInclude Include="StackWalker.h" />
     <ClInclude Include="SymbolInfoFactory.h" />
     <ClInclude Include="Utillities.h" />

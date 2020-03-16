@@ -1,3 +1,3 @@
 #include"LineInfo.h"
 
-LineInfo::LineInfo(std::string fileName, int lineNumber) :m_fileName(std::move(fileName)), m_lineNumber(lineNumber) {}
+LineInfo::LineInfo(std::string fileName, unsigned long lineNumber) :m_fileName(std::move(fileName)), m_lineNumber(lineNumber) {}

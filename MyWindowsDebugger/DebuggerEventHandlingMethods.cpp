@@ -33,11 +33,6 @@ void DebugEventHandlersManager::OutputDebugStringEventHandler(const OUTPUT_DEBUG
 
 void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_DEBUG_INFO& event) {
 	FileHandle m_fileHandle{ event.hFile };
-	std::wcout << "create process event: " << std::endl;
-	std::wcout << "process id: " << GetProcessId(event.hProcess) << std::endl;
-	std::wcout << "thread id: " << GetThreadId(event.hThread) << std::endl;
-	std::wcout << "process executable name is: " << m_fileHandle.getFullFileName() << std::endl;
-	std::wcout << "process start address is: " << event.lpStartAddress << std::endl;
 	this->createProcessInfo = event;
 
 	bool symIntiallizeSuccess = SymInitialize(event.hProcess, NULL, false);
@@ -47,13 +42,16 @@ void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_D
 	std::size_t sizeOfImage = GetModuleSize(static_cast<HMODULE>(event.lpBaseOfImage), event.hProcess);
 	_IMAGEHLP_MODULE64 moduleInfo = LoadModuleSymbols(event.hProcess, event.hFile, (PCSTR)event.lpImageName, (DWORD64)event.lpBaseOfImage, sizeOfImage);
 
-	if (moduleInfo.SymType == SymPdb)
-		CliRendering::RenderModuleLoadSymbolsSuccession(moduleInfo.ModuleName, moduleInfo.BaseOfImage, true);
-	else
-		CliRendering::RenderModuleLoadSymbolsSuccession(moduleInfo.ModuleName, moduleInfo.BaseOfImage, false);
+	if (moduleInfo.SymType == SymPdb) {
+		SymEnumSourceFiles(this->createProcessInfo.hProcess, (ULONG64)this->createProcessInfo.lpBaseOfImage,
+			"*.CPP", &EnumSourceFilesProc, this);
+		for (auto& sourceFileInfo : this->sourceFilesInfomration)
+			SymEnumLines(this->createProcessInfo.hProcess, (ULONG64)this->createProcessInfo.lpBaseOfImage,
+				NULL, sourceFileInfo->GetSourceFilePath().c_str(), &EnumLinesProc, &sourceFileInfo);
+	}
+
 		
 	//setting break point at the start address of the thread
-	
 	InstructionAddress_t threadStartAddress = GetExecutableStartAddress((HMODULE)event.lpBaseOfImage, event.hProcess);
 	ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
 }
@@ -78,10 +76,17 @@ void DebugEventHandlersManager::DllLoadDebugEventHandler(const LOAD_DLL_DEBUG_IN
 	HMODULE moduleHandle = static_cast<HMODULE>(event.lpBaseOfDll);
 	std::size_t dllSize = GetModuleSize(moduleHandle, this->createProcessInfo.hProcess);
 	_IMAGEHLP_MODULE64 dllInfo = LoadModuleSymbols(this->createProcessInfo.hProcess, event.hFile, static_cast<PCSTR>(wstringTostring(dllName).c_str()), (DWORD64)event.lpBaseOfDll, dllSize);
-	if (dllInfo.SymType == SymPdb)
-		CliRendering::RenderModuleLoadSymbolsSuccession(dllInfo.ModuleName, dllInfo.BaseOfImage, true);
-	else
-		CliRendering::RenderModuleLoadSymbolsSuccession(dllInfo.ModuleName, dllInfo.BaseOfImage, false);
+	
+	if (dllInfo.SymType == SymPdb) {
+		SymEnumSourceFiles(this->createProcessInfo.hProcess, (ULONG64)event.lpBaseOfDll,
+			"*.CPP", &EnumSourceFilesProc, this);
+
+		for (auto& sourceFileInfo : this->sourceFilesInfomration) {
+			if(sourceFileInfo->GetSourceFileBaseAddress() == (DWORD64)event.lpBaseOfDll)
+				SymEnumLines(this->createProcessInfo.hProcess, (ULONG64)event.lpBaseOfDll,
+					NULL, sourceFileInfo->GetSourceFilePath().c_str(), &EnumLinesProc, &sourceFileInfo);
+		}
+	}
 }
 
 void DebugEventHandlersManager::UnLoadDllDebugEventHandler(const UNLOAD_DLL_DEBUG_INFO& event) {
@@ -124,4 +129,9 @@ void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG
 
 		continueStatus = DBG_EXCEPTION_NOT_HANDLED;
 	}
+}
+
+void DebugEventHandlersManager::AddSourceFile(PSOURCEFILE sourceFileInfo) {
+	std::unique_ptr<SourceFileInfo> m_sourceFileInfo = std::make_unique<SourceFileInfo>(sourceFileInfo->FileName, sourceFileInfo->ModBase);
+	this->sourceFilesInfomration.push_back(std::move(m_sourceFileInfo));
 }

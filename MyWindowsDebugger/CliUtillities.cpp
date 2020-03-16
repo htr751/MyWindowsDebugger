@@ -1,6 +1,6 @@
 #include"CliUtillities.h"
 
-BreakPointCommandInformation::BreakPointCommandInformation(std::string functionName, int functionLineNumber):m_functionName(functionName), m_functionLineNumber(functionLineNumber) {}
+BreakPointCommandInformation::BreakPointCommandInformation(std::string functionName, unsigned long functionLineNumber):m_functionName(functionName), m_functionLineNumber(functionLineNumber) {}
 
 BreakPointCommandInformation GetBreakPointCommandInformation(const std::string& command, DebuggerCore& debuggerCore) {
 	const auto lineNumberPlace = command.find(':');

@@ -2,6 +2,7 @@
 #include<DbgHelp.h>
 #include<memory>
 #include"PE_Parser.h"
+#include"DebuggerEventHandlingMethods.h"
 
 std::optional<std::wstring> GetLastErrorMessage()noexcept {
 	DWORD errorMessageId = GetLastError();
@@ -82,4 +83,16 @@ InstructionAddress_t GetExecutableStartAddress(HMODULE moduleHandle, HANDLE proc
 	PE_Parser m_PE_Parser{ moduleHandle, processHandle };
 	IMAGE_NT_HEADERS m_Image_Headers = m_PE_Parser.GetImageFileHeaders();
 	return reinterpret_cast<InstructionAddress_t>(m_Image_Headers.OptionalHeader.ImageBase + m_Image_Headers.OptionalHeader.AddressOfEntryPoint);
+}
+
+BOOL __stdcall EnumSourceFilesProc(PSOURCEFILE sourceFileInfo, PVOID userContext) {
+	DebugEventHandlersManager* debugManager = reinterpret_cast<DebugEventHandlersManager*>(userContext);
+	debugManager->AddSourceFile(sourceFileInfo);
+	return TRUE;
+}
+
+BOOL __stdcall EnumLinesProc(PSRCCODEINFO LineInfo, PVOID UserContext) {
+	SourceFileInfo* sourceFileInfo = reinterpret_cast<SourceFileInfo*>(UserContext);
+	sourceFileInfo->AddLineInformation({ LineInfo->Obj, LineInfo->LineNumber, LineInfo->Address });
+	return TRUE;
 }

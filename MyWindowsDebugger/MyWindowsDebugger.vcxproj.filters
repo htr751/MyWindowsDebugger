@@ -73,6 +73,12 @@
     <Filter Include="Source Files\CliModuleSource">
       <UniqueIdentifier>{0683c100-131c-445f-94db-34b9003c68f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DebuggerModule\DebuggerTaskExecuter">
+      <UniqueIdentifier>{d05789bb-8fc5-4c17-a6e1-556936c2dedd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DebuggerModuleSource\DebuggerTaskExecuter">
+      <UniqueIdentifier>{8290e4a2-87ee-4ac0-9613-64292470e700}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DebuggerCore.cpp">
@@ -145,6 +151,12 @@
       <Filter>Source Files\DebuggerModuleSource\DebuggerUtillitisSource</Filter>
     </ClCompile>
     <ClCompile Include="SourceFileInfo.cpp">
+      <Filter>Source Files\DebuggerModuleSource\DebuggerUtillitisSource</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskExecuter.cpp">
+      <Filter>Source Files\DebuggerModuleSource\DebuggerTaskExecuter</Filter>
+    </ClCompile>
+    <ClCompile Include="unique_handle.cpp">
       <Filter>Source Files\DebuggerModuleSource\DebuggerUtillitisSource</Filter>
     </ClCompile>
   </ItemGroup>
@@ -234,6 +246,12 @@
       <Filter>Header Files\Utillitites\wException</Filter>
     </ClInclude>
     <ClInclude Include="SourceFileInfo.h">
+      <Filter>Header Files\DebuggerModule\DebuggerUtillities</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskExecuter.h">
+      <Filter>Header Files\DebuggerModule\DebuggerTaskExecuter</Filter>
+    </ClInclude>
+    <ClInclude Include="unique_handle.h">
       <Filter>Header Files\DebuggerModule\DebuggerUtillities</Filter>
     </ClInclude>
   </ItemGroup>

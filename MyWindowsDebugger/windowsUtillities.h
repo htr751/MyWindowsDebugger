@@ -10,6 +10,7 @@
 #include"wLogicException.h"
 #include"wRunTimeException.h"
 #include"InstructionModifier.h"
+#include"unique_handle.h"
 
 using ThreadID_t = DWORD;
 using ThreadInfo_t = CREATE_THREAD_DEBUG_INFO;
@@ -22,7 +23,7 @@ void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, Ins
 InstructionAddress_t GetExecutableStartAddress(HMODULE moduleHandle, HANDLE processHandle);
 void RevertRipAfterBreakPointException(HANDLE hThread, InstructionModifier& instructionModifier);
 
-HANDLE GetThreadHandleByID(DWORD threadID);
+unique_handle GetThreadHandleByID(DWORD threadID);
 
 //this function uses render func callback to render all cpu registers
 template<typename RenderFunction>
@@ -43,3 +44,5 @@ std::size_t GetModuleSize(HMODULE moduleHandler, HANDLE processHandle);
 
 BOOL __stdcall EnumSourceFilesProc(PSOURCEFILE sourceFileInfo, PVOID userContext);
 BOOL __stdcall EnumLinesProc(PSRCCODEINFO LineInfo, PVOID UserContext);
+
+CONTEXT GetContext(HANDLE threadHandle);

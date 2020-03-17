@@ -10,7 +10,7 @@
 #include"StackWalker.h"
 #include"Utillities.h"
 
-DebugEventHandlersManager::DebugEventHandlersManager(HANDLE processHandle, const DebugEventController& debugEventController)noexcept :m_instructionModifier(processHandle), m_debugEventController(debugEventController){
+DebugEventHandlersManager::DebugEventHandlersManager(HANDLE processHandle, DebugEventController& debugEventController, DebuggerCore& debuggerCore)noexcept :m_instructionModifier(processHandle), m_debugEventController(debugEventController), debuggerCore(debuggerCore){
 
 }
 
@@ -90,13 +90,11 @@ void DebugEventHandlersManager::DllLoadDebugEventHandler(const LOAD_DLL_DEBUG_IN
 }
 
 void DebugEventHandlersManager::UnLoadDllDebugEventHandler(const UNLOAD_DLL_DEBUG_INFO& event) {
-	std::wcout << "dll " << this->baseOfDllToNameMap[event.lpBaseOfDll] << " unloaded" << std::endl;
 	if (!SymUnloadModule64(this->createProcessInfo.hProcess, (DWORD64)event.lpBaseOfDll))
 		CreateRunTimeError(GetLastErrorMessage());
 }
 
 void DebugEventHandlersManager::ExitProcessDebugEventHandler(const EXIT_PROCESS_DEBUG_INFO& event) {
-	std::wcout << "the debugee process has exited with code " << std::hex << event.dwExitCode << std::endl;
 	if (!SymUnloadModule64(this->createProcessInfo.hProcess, (DWORD64)this->createProcessInfo.lpBaseOfImage))
 		CreateRunTimeError(GetLastErrorMessage());
 }
@@ -106,11 +104,10 @@ void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG
 	//this variable is used to indicate whether it already has happend
 	static bool firstBreakPointAlreadyHit = false;
 	if (event.ExceptionRecord.ExceptionCode == STATUS_BREAKPOINT) {
-		std::wcout << "break point exception accourd at address " << event.ExceptionRecord.ExceptionAddress << std::endl;
 		if (firstBreakPointAlreadyHit) {
-			HANDLE threadHandle = GetThreadHandleByID(this->m_debugEventController.GetCurrentThreadID());
-			RevertRipAfterBreakPointException(threadHandle, this->m_instructionModifier);
-			DisplayCpuRegisters(threadHandle, &CliRendering::RenderCpuRegisters);
+			auto threadHandle = GetThreadHandleByID(this->m_debugEventController.GetCurrentThreadID());
+			RevertRipAfterBreakPointException(threadHandle.getHandle(), this->m_instructionModifier);
+			auto task = this->debuggerCore.GetDebuggerTask();
 
 		}
 		else {
@@ -119,14 +116,6 @@ void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG
 		continueStatus = DBG_CONTINUE;
 	}
 	else {
-		std::wcout << "first chance exception accourd, exception code is: " << event.ExceptionRecord.ExceptionCode << std::endl;
-		std::wcout << std::endl;
-		HANDLE threadHandle = GetThreadHandleByID(this->m_debugEventController.GetCurrentThreadID());
-		DisplayCpuRegisters(threadHandle, &CliRendering::RenderCpuRegisters);
-		std::wcout << std::endl;
-
-		RetrieveCallStack(threadHandle, this->createProcessInfo.hProcess);
-
 		continueStatus = DBG_EXCEPTION_NOT_HANDLED;
 	}
 }
@@ -134,4 +123,9 @@ void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG
 void DebugEventHandlersManager::AddSourceFile(PSOURCEFILE sourceFileInfo) {
 	std::unique_ptr<SourceFileInfo> m_sourceFileInfo = std::make_unique<SourceFileInfo>(sourceFileInfo->FileName, sourceFileInfo->ModBase);
 	this->sourceFilesInfomration.push_back(std::move(m_sourceFileInfo));
+}
+
+void DebugEventHandlersManager::StopDebugging() {
+	TerminateProcess(this->createProcessInfo.hProcess, 0u);
+	this->m_debugEventController.StopDebugging();
 }

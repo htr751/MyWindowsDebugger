@@ -6,6 +6,7 @@
 
 class DebugEventController {
 	DebugEvent event;
+	bool continueDebug = true;
 public:
 	DebugEventController()noexcept = default;
 	void WaitForDebugEvent();
@@ -18,4 +19,8 @@ public:
 	void ContinueDebugee(DWORD continueStatus) const noexcept;
 	ThreadID_t GetCurrentThreadID() const noexcept;
 	ProcessID_t GetCurrentProcessID() const noexcept;
+	bool NeedToContinueDebug() const noexcept {
+		return this->continueDebug;
+	}
+	void StopDebugging() noexcept { this->continueDebug = false; }
 };

@@ -34,6 +34,6 @@ void CliRendering::RenderModuleLoadSymbolsSuccession(const std::string& moduleNa
 
 void CliRendering::RenderSymbolInformation(const SymbolInfoFactory::SymbolInfo& symbolInfo) {
 	std::cout << std::endl << "symbol " << symbolInfo.symbolName << " at address: 0x" << std::setfill('0') << std::setw(16) << std::hex << symbolInfo.symbolAddress << std::endl;
-	std::cout << "this symbol is defined at source file " << symbolInfo.symbolSourceInfo.FileName << ":" << std::dec << symbolInfo.symbolSourceInfo.LineNumber << std::endl;
+	std::cout << "this symbol is defined at source file " << symbolInfo.symbolSourceInfo.m_fileName << ":" << std::dec << symbolInfo.symbolSourceInfo.m_lineNumber << std::endl;
 
 }

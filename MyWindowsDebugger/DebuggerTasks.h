@@ -6,6 +6,8 @@
 #include"SymbolInfoFactory.h"
 #include"LineInfo.h"
 #include"Utillities.h"
+#include<exception>
+#include"wException.h"
 
 
 template<typename TaskData, typename Task>
@@ -16,6 +18,8 @@ public:
 
 	TaskData GetTaskData() { return this->taskData.get_future().get(); }
 	void setTaskData(const TaskData& taskData) { this->taskData.set_value(taskData); }
+	void CreateTaskWideException(const wException& exception) { this->taskData.set_exception(std::make_exception_ptr(exception)); }
+	void CreateTaskException(const std::exception& exception) { this->taskData.set_exception(std::make_exception_ptr(exception)); }
 	Task& getFullTask() { return static_cast<Task&>(*this); }
 
 };
@@ -76,5 +80,6 @@ public:
 
 class ContinueTask : public DebuggerTask<bool, ContinueTask> {};
 class StepIntoTask : public DebuggerTask<bool, StepIntoTask> {};
+class StepOutTask : public DebuggerTask<bool, StepOutTask> {};
 class StepTask : public DebuggerTask<bool, StepTask> {};
 class ExitTask : public DebuggerTask<bool, ExitTask> {};

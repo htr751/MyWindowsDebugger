@@ -1,6 +1,14 @@
 #include"MyWindowsDebugger.h"
 #include"DebuggerCore.h"
 
+std::shared_ptr<DebuggerTasksContainer> DebuggerCore::GetDebuggerTask() {
+	std::unique_lock  mutexGaurd{ this->conditionMutex };
+	this->hasTaskVariable.wait(mutexGaurd, [this]() {return this->CheckForTask(); });
+	return this->debuggerTasks;
+}
+
+bool DebuggerCore::CheckForTask() const noexcept { return this->hasTaskCondition; }
+
 void DebuggerCore::StartDebugging(const std::wstring& executableName) {
 	this->m_debuggerThread = std::thread(&DebuggerThreadEntryPoint, std::ref(*this), executableName);
 }
@@ -46,4 +54,8 @@ bool DebuggerCore::Step() {
 
 bool DebuggerCore::StopDebugging() {
 	return this->CreateDebuggerTask(ExitTask());
+}
+
+bool DebuggerCore::StepOut() {
+	return this->CreateDebuggerTask(StepOutTask());
 }

@@ -16,7 +16,7 @@
 int DebuggerThreadEntryPoint(DebuggerCore& debuggerCore, std::wstring executableName) {
     ProcessInfo processInformation{ executableName };
     DebugEventController debugLoopEventController;
-    DebugEventHandlersManager debugEventManager{ processInformation.processInfo.hProcess, debugLoopEventController };
+    DebugEventHandlersManager debugEventManager{ processInformation.processInfo.hProcess, debugLoopEventController, debuggerCore};
 
     bool continueDebugging = true;
     DWORD continueStatus = DBG_CONTINUE;
@@ -34,6 +34,8 @@ int DebuggerThreadEntryPoint(DebuggerCore& debuggerCore, std::wstring executable
                     [&debugEventManager](const UNLOAD_DLL_DEBUG_INFO& event) {debugEventManager.UnLoadDllDebugEventHandler(event); },
                     [&debugEventManager](const RIP_INFO& event) {}
                 });
+            if (!debugLoopEventController.NeedToContinueDebug())
+                break;
             debugLoopEventController.ContinueDebugee(continueStatus);
         }
         catch (const wRunTimeException & err) {

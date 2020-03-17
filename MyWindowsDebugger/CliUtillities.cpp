@@ -7,8 +7,8 @@ BreakPointCommandInformation GetBreakPointCommandInformation(const std::string& 
 	const auto functionName = (lineNumberPlace == std::string::npos) ? command : command.substr(lineNumberPlace - 1);
 
 	const auto functionInformation = debuggerCore.GetSymbolInformation(functionName);
-	auto lineNumber = (lineNumberPlace == std::string::npos) ? functionInformation.symbolSourceInfo.LineNumber :
-		functionInformation.symbolSourceInfo.LineNumber + std::stoi(command.substr(lineNumberPlace + 1).c_str());
+	auto lineNumber = (lineNumberPlace == std::string::npos) ? functionInformation.symbolSourceInfo.m_lineNumber :
+		functionInformation.symbolSourceInfo.m_lineNumber + std::stoul(command.substr(lineNumberPlace + 1).c_str());
 
 	return { functionInformation.symbolName, lineNumber };
 }

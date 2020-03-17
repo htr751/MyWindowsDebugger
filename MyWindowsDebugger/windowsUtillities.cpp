@@ -44,7 +44,7 @@ void RevertRipAfterBreakPointException(HANDLE hThread, InstructionModifier& inst
 
 }
 
-HANDLE GetThreadHandleByID(DWORD threadID) {
+unique_handle GetThreadHandleByID(DWORD threadID) {
 	HANDLE tHandle = OpenThread(THREAD_ALL_ACCESS, false, threadID);
 	if (!tHandle)
 		CreateRunTimeError(GetLastErrorMessage());
@@ -95,4 +95,12 @@ BOOL __stdcall EnumLinesProc(PSRCCODEINFO LineInfo, PVOID UserContext) {
 	SourceFileInfo* sourceFileInfo = reinterpret_cast<SourceFileInfo*>(UserContext);
 	sourceFileInfo->AddLineInformation({ LineInfo->Obj, LineInfo->LineNumber, LineInfo->Address });
 	return TRUE;
+}
+
+CONTEXT GetContext(HANDLE threadHandle) {
+	CONTEXT threadContext;
+	threadContext.ContextFlags = CONTEXT_ALL;
+	if (!GetThreadContext(threadHandle, &threadContext))
+		CreateRunTimeError(GetLastErrorMessage());
+	return threadContext;
 }

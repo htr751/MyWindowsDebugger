@@ -4,7 +4,7 @@
 #include"DebuggerMessages.h"
 
 using DebuggerTasksContainer = std::variant<StackTraceTask, SymbolInforamtionTask, ContextInformationTask, SetBreakPointTask, RemoveBreakPointTask,
-	ContinueTask, StepIntoTask, StepTask, ExitTask>;
+	ContinueTask, StepIntoTask, StepOutTask, StepTask, ExitTask>;
 
 using DebuggerMessagesContainer = std::variant<OutputMessage, CreateProcessMessage, ProcessExitMessage, CreateThreadMessage,
 	ThreadExitMessage, LoadDllMessage, UnLoadDllMessage, BreakPointMessage, ExceptionMessage>;

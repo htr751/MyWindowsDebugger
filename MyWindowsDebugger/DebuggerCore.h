@@ -19,7 +19,7 @@
 class DebuggerCore {
 	mutable std::thread m_debuggerThread;
 
-	std::unique_ptr<DebuggerTasksContainer> debuggerTasks;
+	std::shared_ptr<DebuggerTasksContainer> debuggerTasks;
 	mutable std::mutex conditionMutex;
 	mutable std::condition_variable hasTaskVariable;
 	mutable bool hasTaskCondition;
@@ -28,6 +28,9 @@ class DebuggerCore {
 	mutable std::mutex debuggerMessagesMutex;
 
 public:
+	std::shared_ptr<DebuggerTasksContainer> GetDebuggerTask();
+	bool CheckForTask() const noexcept;
+
 	void StartDebugging(const std::wstring& executableName);
 	bool CheckForDebuggerMessage() const;
 	StackTraceData GetStackTrace();
@@ -38,6 +41,7 @@ public:
 	bool ContinueExecution();
 	bool StepInto();
 	bool Step();
+	bool StepOut();
 	bool StopDebugging();
 
 	template<typename... MessageHandlers>
@@ -55,7 +59,7 @@ private:
 	template<typename Task, typename Stub = std::enable_if_t<DebuggerTaskTraits<Task>::value>>
 	decltype(auto) CreateDebuggerTask(Task&& task) {
 		std::unique_lock mutexGaurd{ this->conditionMutex };
-		this->debuggerTasks = std::make_unique<DebuggerTasksContainer>(std::move(task));
+		this->debuggerTasks = std::make_shared<DebuggerTasksContainer>(std::move(task));
 		this->hasTaskCondition = true;
 		this->hasTaskVariable.notify_one();
 		mutexGaurd.unlock();

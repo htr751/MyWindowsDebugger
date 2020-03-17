@@ -3,6 +3,7 @@
 #include<DbgHelp.h>
 #include<string>
 #include<optional>
+#include"LineInfo.h"
 
 class SymbolInfoFactory {
 public:
@@ -18,8 +19,8 @@ public:
 		ULONG symbolScope;
 		ULONG symbolTag;
 		std::string symbolName;
-		IMAGEHLP_LINE64 symbolSourceInfo;
-		SymbolInfo(const _SYMBOL_INFO& symbolInfo, const IMAGEHLP_LINE64& symbolSourceInfo);
+		LineInfo symbolSourceInfo;
+		SymbolInfo(const _SYMBOL_INFO& symbolInfo, const LineInfo& symbolSourceInfo);
 
 		SymbolInfo() = default;
 		SymbolInfo(const SymbolInfo&) = default;
@@ -30,4 +31,5 @@ public:
 
 	SymbolInfoFactory() = default;
 	std::optional<SymbolInfoFactory::SymbolInfo> GetSymbolInfo(HANDLE processHandle, DWORD64 symbolAddr) const;
+	std::optional<SymbolInfoFactory::SymbolInfo> GetSymbolInfoByName(HANDLE processHandle, const std::string& symbolName) const;
 };

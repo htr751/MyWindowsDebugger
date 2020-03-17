@@ -171,6 +171,8 @@
     <ClCompile Include="SourceFileInfo.cpp" />
     <ClCompile Include="StackWalker.cpp" />
     <ClCompile Include="SymbolInfoFactory.cpp" />
+    <ClCompile Include="TaskExecuter.cpp" />
+    <ClCompile Include="unique_handle.cpp" />
     <ClCompile Include="Utillities.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="wException.cpp" />
@@ -203,6 +205,8 @@
     <ClInclude Include="SourceFileInfo.h" />
     <ClInclude Include="StackWalker.h" />
     <ClInclude Include="SymbolInfoFactory.h" />
+    <ClInclude Include="TaskExecuter.h" />
+    <ClInclude Include="unique_handle.h" />
     <ClInclude Include="Utillities.h" />
     <ClInclude Include="wException.h" />
     <ClInclude Include="windowsUtillities.h" />

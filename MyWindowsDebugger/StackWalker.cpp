@@ -3,7 +3,7 @@
 #include"SymbolInfoFactory.h"
 #include"CliRendering.h"
 
-void RetrieveCallStack(HANDLE threadHandle, HANDLE processHandle) {
+StackTraceData RetrieveCallStack(HANDLE threadHandle, HANDLE processHandle) {
 	STACKFRAME64 stackFrame = { 0 };
 	CONTEXT threadContext = { 0 };
 	SetLastError(0);
@@ -20,6 +20,7 @@ void RetrieveCallStack(HANDLE threadHandle, HANDLE processHandle) {
 	stackFrame.AddrFrame.Mode = AddrModeFlat;
 
 	SymbolInfoFactory symbolInfoFactory;
+	StackTraceData stackTraceData;
 	bool stackWalkSuccess;
 	do {
 		stackWalkSuccess = StackWalk64(IMAGE_FILE_MACHINE_AMD64, processHandle, threadHandle, &stackFrame,
@@ -29,9 +30,28 @@ void RetrieveCallStack(HANDLE threadHandle, HANDLE processHandle) {
 		auto symbolInfo = symbolInfoFactory.GetSymbolInfo(processHandle, stackFrame.AddrPC.Offset);
 		if (!symbolInfo.has_value())
 			continue;
-
-		CliRendering::RenderSymbolInformation(symbolInfo.value());
+		stackTraceData.stackTrace.push_back(symbolInfo.value());
 	} while (stackFrame.AddrReturn.Offset != 0);
+	return stackTraceData;
 
+}
 
+std::optional<STACKFRAME> RetrieveCurrentStackFrame(HANDLE threadHandle, HANDLE processHandle) {
+	STACKFRAME stackFrame = { 0 };
+	try {
+		auto threadContext = GetContext(threadHandle);
+		stackFrame.AddrPC.Offset = threadContext.Rip;
+		stackFrame.AddrPC.Mode = AddrModeFlat;
+		stackFrame.AddrStack.Offset = threadContext.Rsp;
+		stackFrame.AddrStack.Mode = AddrModeFlat;
+		stackFrame.AddrFrame.Offset = threadContext.Rbp;
+		stackFrame.AddrFrame.Mode = AddrModeFlat;
+
+		StackWalk64(IMAGE_FILE_MACHINE_AMD64, processHandle, threadHandle, &stackFrame,
+			&threadContext, nullptr, SymFunctionTableAccess64, SymGetModuleBase64, nullptr);
+		return stackFrame;
+	}
+	catch (...) {
+		return {};
+	}
 }

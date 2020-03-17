@@ -13,4 +13,4 @@ template<> struct DebuggerTaskTraits<ContinueTask> : public std::true_type {};
 template<> struct DebuggerTaskTraits<StepIntoTask> : public std::true_type {};
 template<> struct DebuggerTaskTraits<StepTask> : public std::true_type {};
 template<> struct DebuggerTaskTraits<ExitTask> : public std::true_type {};
-
+template<> struct DebuggerTaskTraits<StepOutTask> : public std::true_type {};

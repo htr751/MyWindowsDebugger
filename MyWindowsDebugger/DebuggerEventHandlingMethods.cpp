@@ -9,6 +9,7 @@
 #include"Utillities.h"
 #include"StackWalker.h"
 #include"Utillities.h"
+#include"TaskExecuter.h"
 
 DebugEventHandlersManager::DebugEventHandlersManager(HANDLE processHandle, DebugEventController& debugEventController, DebuggerCore& debuggerCore)noexcept :m_instructionModifier(processHandle), m_debugEventController(debugEventController), debuggerCore(debuggerCore){
 
@@ -103,17 +104,24 @@ void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG
 	//the kernel always send break point event when creating the process
 	//this variable is used to indicate whether it already has happend
 	static bool firstBreakPointAlreadyHit = false;
+
 	if (event.ExceptionRecord.ExceptionCode == STATUS_BREAKPOINT) {
 		if (firstBreakPointAlreadyHit) {
+
 			auto threadHandle = GetThreadHandleByID(this->m_debugEventController.GetCurrentThreadID());
 			RevertRipAfterBreakPointException(threadHandle.getHandle(), this->m_instructionModifier);
-			auto task = this->debuggerCore.GetDebuggerTask();
-
+			auto threadContext = GetContext(threadHandle.getHandle());
+			this->revertedBreakPoint = (InstructionAddress_t)threadContext.Rip; // sets the current rip to break point to examine
+			continueStatus = this->HandleSingleStepping();
 		}
 		else {
 			firstBreakPointAlreadyHit = true;
+			continueStatus = DBG_CONTINUE;
 		}
-		continueStatus = DBG_CONTINUE;
+	}
+	else if (event.ExceptionRecord.ExceptionCode == STATUS_SINGLE_STEP) {
+		this->RestoreRevertedBreakPoint();
+		continueStatus = this->HandleSingleStepping();
 	}
 	else {
 		continueStatus = DBG_EXCEPTION_NOT_HANDLED;
@@ -128,4 +136,40 @@ void DebugEventHandlersManager::AddSourceFile(PSOURCEFILE sourceFileInfo) {
 void DebugEventHandlersManager::StopDebugging() {
 	TerminateProcess(this->createProcessInfo.hProcess, 0u);
 	this->m_debugEventController.StopDebugging();
+}
+
+void DebugEventHandlersManager::RestoreRevertedBreakPoint() {
+	if (this->revertedBreakPoint.has_value()) {
+		auto& breakPointToExamine = this->revertedBreakPoint.value();
+		for (const auto& permenantBreakPoint : this->permenantBreakPoints) {
+			if (permenantBreakPoint == breakPointToExamine) {
+				ChangeInstructionToBreakPoint(this->m_instructionModifier, breakPointToExamine);
+				this->revertedBreakPoint.reset();
+				return;
+			}
+		}
+	}
+}
+
+DWORD DebugEventHandlersManager::HandleSingleStepping() {
+	static TaskExecuter m_taskExecuter{ *this };
+
+	if (m_taskExecuter.HasPendingTask()) {
+		auto executionCode = m_taskExecuter.ContinueTaskExecution();
+		if (executionCode == TaskExecuter::ExecutionCode::CONTINUE_DEBUG ||
+			executionCode == TaskExecuter::ExecutionCode::TASK_COMPLETION_CONTINUE_EXECUTION)
+			return DBG_CONTINUE;
+	}
+	// if there is no pending task or the pending task completed his execution(in success or in failiure)
+	// ask the user for another task to execute
+
+	while (!m_taskExecuter.HasPendingTask()) {
+		auto task = this->debuggerCore.GetDebuggerTask();
+		auto executionCode = m_taskExecuter.ExecuteTask(task);
+
+		if (executionCode == TaskExecuter::ExecutionCode::CONTINUE_DEBUG ||
+			executionCode == TaskExecuter::ExecutionCode::TASK_COMPLETION_CONTINUE_EXECUTION)
+			return DBG_CONTINUE;
+	}
+	return DBG_CONTINUE;
 }

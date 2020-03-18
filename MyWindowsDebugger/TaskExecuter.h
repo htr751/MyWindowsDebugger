@@ -7,7 +7,6 @@
 //this class acts as delegated class of DebugEventHandlersManager that responsible to execute tasks
 class TaskExecuter {
 public:
-	enum class ExecuterState{IDLE, EXECUTING_TASK};
 	enum class ExecutionCode{CONTINUE_DEBUG, TASK_COMPLETION,
 		TASK_FAILED, TASK_COMPLETION_CONTINUE_EXECUTION, EXECUTE_SUB_TASK};
 private:
@@ -30,7 +29,6 @@ private:
 	std::stack<std::unique_ptr<TaskState>> tasksToExecuteStates;//includes states for all subtasks that happen concurrently
 
 	DebugEventHandlersManager& debugInformation;
-	ExecuterState executerState;
 public:
 	TaskExecuter(DebugEventHandlersManager& debugInformation);
 	ExecutionCode ExecuteTask(std::shared_ptr<DebuggerTasksContainer> task);

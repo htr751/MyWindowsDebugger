@@ -85,7 +85,7 @@ TaskExecuter::ExecutionCode TaskExecuter::HandleRemoveBreakPointTask(RemoveBreak
 		task.CreateTaskException(err);
 		return TaskExecuter::ExecutionCode::TASK_FAILED;
 	}
-	catch (const wException & err) {
+	catch (const wException&) {
 		task.CreateTaskException(std::runtime_error("break point removal failed - there wasn't break point at this place"));
 		return TaskExecuter::ExecutionCode::TASK_FAILED;
 	}
@@ -93,7 +93,7 @@ TaskExecuter::ExecutionCode TaskExecuter::HandleRemoveBreakPointTask(RemoveBreak
 
 TaskExecuter::ExecutionCode TaskExecuter::HandleContinueTask(ContinueTask& task) noexcept{
 	task.setTaskData(true);
-	return TaskExecuter::ExecutionCode::TASK_COMPLETION_CONTINUE_EXECUTION;
+	return TaskExecuter::ExecutionCode::TASK_COMPLETION;
 }
 
 TaskExecuter::ExecutionCode TaskExecuter::HandleStepTask(StepTask& task) noexcept {
@@ -138,7 +138,7 @@ TaskExecuter::ExecutionCode TaskExecuter::HandleStepTask(StepTask& task) noexcep
 		LineInfo currentLineInformation{ this->debugInformation.createProcessInfo.hProcess, threadContext.Rip };
 		if (this->currentTaskState->currentLine.m_lineNumber != currentLineInformation.m_lineNumber) {
 			task.setTaskData(true);
-			return TaskExecuter::ExecutionCode::TASK_COMPLETION;
+			return TaskExecuter::ExecutionCode::TASK_COMPLETION_CONTINUE_EXECUTION;
 		}
 	}
 	//this flags sets exeuction so execution will be stopped in the next instruction
@@ -274,7 +274,14 @@ TaskExecuter::ExecutionCode TaskExecuter::ExecuteTask(std::shared_ptr<DebuggerTa
 			this->tasksToExecuteStates.pop();
 			continue;
 		}
-		else if (executionCode != TaskExecuter::ExecutionCode::EXECUTE_SUB_TASK)
+		else if (executionCode == TaskExecuter::ExecutionCode::TASK_COMPLETION ||
+				executionCode == TaskExecuter::ExecutionCode::TASK_COMPLETION_CONTINUE_EXECUTION ||
+				executionCode == TaskExecuter::ExecutionCode::TASK_FAILED) {
+			this->currentTask.reset();
+			this->currentTaskState.reset();
+			return executionCode;
+		}
+		else if (executionCode == TaskExecuter::ExecutionCode::CONTINUE_DEBUG)
 			return executionCode;
 	}
 }

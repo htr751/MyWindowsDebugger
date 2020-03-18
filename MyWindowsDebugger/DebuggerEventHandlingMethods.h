@@ -22,6 +22,10 @@ class DebugEventHandlersManager {
 	std::vector<std::unique_ptr<SourceFileInfo>> sourceFilesInfomration;
 	std::vector<InstructionAddress_t> permenantBreakPoints;
 
+	//this member variable holds break point that was reverted so the debugger can examine the break point
+	//check if it is a permenant break point and if it is, restore it
+	std::optional<InstructionAddress_t> revertedBreakPoint;
+
 public:
 	DebugEventHandlersManager(HANDLE processHandle, DebugEventController& debugEventController, DebuggerCore& debuggerCore) noexcept;
 	void AddSourceFile(PSOURCEFILE sourceFileInfo);
@@ -36,4 +40,10 @@ public:
 	void ExceptionDebugEventHandler(const EXCEPTION_DEBUG_INFO& event, DWORD& continueStatus);
 	void StopDebugging();
 	friend class TaskExecuter;
+
+private:
+	//this method checks if there is permenant reverted break point and if there is it restore that break point
+	void RestoreRevertedBreakPoint();
+	// this method handle single step event( in this cotext break point event is also single step)
+	DWORD HandleSingleStepping();
 };

@@ -15,6 +15,7 @@
 #include<type_traits>
 #include<memory>
 #include"DebuggerCoreTypes.h"
+#include"DebuggerMessageTraits.h"
 
 class DebuggerCore {
 	mutable std::thread m_debuggerThread;
@@ -30,6 +31,7 @@ class DebuggerCore {
 public:
 	std::shared_ptr<DebuggerTasksContainer> GetDebuggerTask();
 	bool CheckForTask() const noexcept;
+	void FinishHandleTask() noexcept;
 
 	void StartDebugging(const std::wstring& executableName);
 	bool CheckForDebuggerMessage() const;
@@ -55,8 +57,14 @@ public:
 			std::visit(messageHandlers, message);
 	}
 
+	template<typename Message, typename = std::enable_if_t<DebuggerMessageTraits<Message>::value>>
+	void CreateDebuggerMessage(Message&& message) {
+		std::lock_guard MutexGaurd{ debuggerMessagesMutex };
+		this->debuggerMessages.push(std::forward<Message>(message));
+	}
+
 private:
-	template<typename Task, typename Stub = std::enable_if_t<DebuggerTaskTraits<Task>::value>>
+	template<typename Task, typename = std::enable_if_t<DebuggerTaskTraits<Task>::value>>
 	decltype(auto) CreateDebuggerTask(Task&& task) {
 		std::unique_lock mutexGaurd{ this->conditionMutex };
 		this->debuggerTasks = std::make_shared<DebuggerTasksContainer>(std::move(task));
@@ -65,11 +73,21 @@ private:
 		mutexGaurd.unlock();
 
 		typename Task::TaskRespone taskRespone;
-		std::visit(overload{
-			[&taskRespone](Task& task) {taskRespone = task.GetTaskData(); },
-			[](auto&& task) {}
-			},
-			*this->debuggerTasks.get());
+		try {
+			std::visit(overload{
+				[&taskRespone](Task& task) {taskRespone = task.GetTaskData(); },
+				[](auto&& task) {}
+				},
+				*this->debuggerTasks.get());
+		}
+		catch (std::exception & exc) {
+			//reset the task condition to notify that there is no any task
+			this->FinishHandleTask();
+			std::rethrow_exception(std::make_exception_ptr(exc));
+		}
+		//reset the task condition to notify that there is no any task
+		this->FinishHandleTask();
+
 		return taskRespone;
 	}
 

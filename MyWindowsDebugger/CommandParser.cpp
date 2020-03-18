@@ -6,6 +6,7 @@
 #include"inputRange.h"
 #include"CommandsExecuter.h"
 #include<algorithm>
+#include<cassert>
 
 std::vector<std::string> TokenizeCommand(const std::string& command) {
 	std::istringstream commandStream{ command };
@@ -26,11 +27,45 @@ DebuggerResponse executeCommand(DebuggerCore& debuggerCore, const std::vector<st
 	std::vector<std::string> commandParameters{ command.size() - 1 };
 	std::for_each(++command.begin(), command.end(), [&commandParameters](const auto& parameter) {commandParameters.push_back(parameter); });
 
-	if (commandName == "breakPoint")
-		return executer.ExecuteSetBreakPointCommand(commandParameters);
-	if (commandName == "removeBreakPoint")
-		return executer.ExecuteRemoveBreakPointCommand(commandParameters);
+	if (commandName == "breakPoint") {
+		if (!executer.ExecuteSetBreakPointCommand(commandParameters))
+			CreateRunTimeError(L"unknown error accourd");
+		return "operation completed successfully";
+	}
+	if (commandName == "removeBreakPoint") {
+		if (!executer.ExecuteRemoveBreakPointCommand(commandParameters))
+			CreateRunTimeError(L"unknown error accourd");
+		return "operation completed successfully";
+	}
 	if (commandName == "stackTrace")
 		return executer.ExecuteStackTraceCommand(commandParameters);
-	//TODO: handle other commands after implementing debugging actions in debuggeing module
+	if (commandName == "getSymbolInformation")
+		return executer.ExecuteGetSymbolInformationCommand(commandParameters);
+	if (commandName == "getContext")
+		return executer.ExecuteGetContextCommand(commandParameters);
+	if (commandName == "continue") {
+		if (!executer.ExecuteContinueCommand(commandParameters))
+			CreateRunTimeError(L"unknown error accourd");
+		return "operation completed successfully";
+	}
+	if (commandName == "stepInto") {
+		if (!executer.ExecuteStepIntoCommand(commandParameters))
+			CreateRunTimeError(L"unknown error accourd");
+		return "operation completed successfully";
+	}
+	if (commandName == "stepOver") {
+		if (!executer.ExecuteStepCommand(commandParameters))
+			CreateRunTimeError(L"unknown error accourd");
+		return "operation completed successfully";
+	}
+	if (commandName == "stepOut") {
+		if (!executer.ExecuteStepOutCommand(commandParameters))
+			CreateRunTimeError(L"unknown error accourd");
+		return "operation completed successfully";
+	}
+	if (commandName == "exit") {
+		if (!executer.ExecuteStopDebuggingCommand(commandParameters))
+			CreateRunTimeError(L"unknown error accourd");
+		return "operation completed successfully";
+	}
 }

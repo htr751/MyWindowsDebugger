@@ -5,10 +5,10 @@
 #include"DebuggerCore.h"
 
 struct BreakPointCommandInformation {
-	std::string m_functionName;
-	unsigned long m_functionLineNumber;
+	std::string m_sourceFileName;
+	unsigned long m_lineNumber;
 
-	BreakPointCommandInformation(std::string functionName, unsigned long functionLineNumber);
+	BreakPointCommandInformation(std::string sourceFileName, unsigned long lineNumber);
 };
 
 BreakPointCommandInformation GetBreakPointCommandInformation(const std::string& command, DebuggerCore& debuggerCore);

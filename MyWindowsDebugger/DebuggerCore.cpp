@@ -59,3 +59,8 @@ bool DebuggerCore::StopDebugging() {
 bool DebuggerCore::StepOut() {
 	return this->CreateDebuggerTask(StepOutTask());
 }
+
+void DebuggerCore::FinishHandleTask() noexcept {
+	std::lock_guard conditonLock{ this->conditionMutex };
+	this->hasTaskCondition = false;
+}

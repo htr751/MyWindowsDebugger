@@ -254,5 +254,8 @@
     <ClInclude Include="unique_handle.h">
       <Filter>Header Files\DebuggerModule\DebuggerUtillities</Filter>
     </ClInclude>
+    <ClInclude Include="DebuggerMessageTraits.h">
+      <Filter>Header Files\DebuggerCore</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

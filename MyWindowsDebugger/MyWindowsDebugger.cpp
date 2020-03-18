@@ -38,10 +38,11 @@ int DebuggerThreadEntryPoint(DebuggerCore& debuggerCore, std::wstring executable
                 break;
             debugLoopEventController.ContinueDebugee(continueStatus);
         }
-        catch (const wRunTimeException & err) {
-            std::wcout << err.what() << std::endl;
+        catch (const wRunTimeException&) {
+            debuggerCore.CreateDebuggerMessage(StopDebuggingMessage{});
             return 0;
         }
     }
+    debuggerCore.CreateDebuggerMessage(StopDebuggingMessage{});
     return 0;
 }

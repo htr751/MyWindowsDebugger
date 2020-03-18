@@ -192,6 +192,7 @@
     <ClInclude Include="DebuggerCoreTypes.h" />
     <ClInclude Include="DebuggerEventHandlingMethods.h" />
     <ClInclude Include="DebuggerMessages.h" />
+    <ClInclude Include="DebuggerMessageTraits.h" />
     <ClInclude Include="DebuggerTasks.h" />
     <ClInclude Include="DebuggerTaskTraits.h" />
     <ClInclude Include="FileHandle.h" />

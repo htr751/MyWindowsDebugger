@@ -279,6 +279,7 @@ TaskExecuter::ExecutionCode TaskExecuter::ExecuteTask(std::shared_ptr<DebuggerTa
 				executionCode == TaskExecuter::ExecutionCode::TASK_FAILED) {
 			this->currentTask.reset();
 			this->currentTaskState.reset();
+			this->debugInformation.debuggerCore.FinishHandleTask();
 			return executionCode;
 		}
 		else if (executionCode == TaskExecuter::ExecutionCode::CONTINUE_DEBUG)

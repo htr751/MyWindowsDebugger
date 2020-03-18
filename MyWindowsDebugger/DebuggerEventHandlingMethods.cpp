@@ -10,6 +10,8 @@
 #include"StackWalker.h"
 #include"Utillities.h"
 #include"TaskExecuter.h"
+#include"DebuggerMessages.h"
+#include<sstream>
 
 DebugEventHandlersManager::DebugEventHandlersManager(HANDLE processHandle, DebugEventController& debugEventController, DebuggerCore& debuggerCore)noexcept :m_instructionModifier(processHandle), m_debugEventController(debugEventController), debuggerCore(debuggerCore){
 
@@ -21,15 +23,23 @@ void DebugEventHandlersManager::OutputDebugStringEventHandler(const OUTPUT_DEBUG
 	size_t numberOfBytesReadFromProcessMemory = 0;
 	bool err = ReadProcessMemory(processInfo.processInfo.hProcess,outputString.get(), event.lpDebugStringData, (DWORD64)(event.nDebugStringLength) * 2, &numberOfBytesReadFromProcessMemory);
 
-	if (!err || numberOfBytesReadFromProcessMemory != ((DWORD64)event.nDebugStringLength) * 2)
+	if (!err || numberOfBytesReadFromProcessMemory != ((DWORD64)event.nDebugStringLength) * 2) 
 		CreateRunTimeError(GetLastErrorMessage(), L"unknown error type");
 
-	std::wcout << "debugee thread id: " << processInfo.processInfo.dwThreadId << " inside debugee process: " << processInfo.processInfo.dwProcessId << " says: ";
-	std::wcout.flush();
-	if (event.fUnicode)
-		std::wcout << outputString.get() << std::endl;
-	else
-		std::cout << (char*)outputString.get() << std::endl;
+	if (event.fUnicode) {
+		std::wostringstream debuggerMessage{};
+		debuggerMessage << L"debugee thread id: " << processInfo.processInfo.dwThreadId << L" inside debugee process: " << processInfo.processInfo.dwProcessId << L" says: ";
+		debuggerMessage.flush();
+		debuggerMessage << outputString.get() << std::endl;
+		this->debuggerCore.CreateDebuggerMessage(OutputMessage{ debuggerMessage.str() });
+	}
+	else {
+		std::ostringstream debuggerMessage{};
+		debuggerMessage << "debugee thread id: " << processInfo.processInfo.dwThreadId << " inside debugee process: " << processInfo.processInfo.dwProcessId << " says: ";
+		debuggerMessage.flush();
+		debuggerMessage << (char*)outputString.get() << std::endl;
+		this->debuggerCore.CreateDebuggerMessage(OutputMessage{ debuggerMessage.str() });
+	}
 }
 
 void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_DEBUG_INFO& event) {
@@ -51,20 +61,23 @@ void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_D
 				NULL, sourceFileInfo->GetSourceFilePath().c_str(), &EnumLinesProc, &sourceFileInfo);
 	}
 
-		
+
 	//setting break point at the start address of the thread
 	InstructionAddress_t threadStartAddress = GetExecutableStartAddress((HMODULE)event.lpBaseOfImage, event.hProcess);
 	ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
+
+	this->debuggerCore.CreateDebuggerMessage(CreateProcessMessage{ m_fileHandle.getFullFileName(), event.lpBaseOfImage, GetProcessId(event.hProcess) });
 }
 
 void DebugEventHandlersManager::CreateThreadDebugEventHandler(const CREATE_THREAD_DEBUG_INFO& event) {
 	ThreadID_t threadID = GetThreadId(event.hThread);
-	std::wcout << "Thread " << event.hThread << std::dec << " (Thread ID: " << threadID << ") created at " << std::hex << event.lpStartAddress << std::endl;
+
+	this->debuggerCore.CreateDebuggerMessage(CreateThreadMessage{ GetThreadId(event.hThread), (DWORD64)event.lpStartAddress });
 	this->threadIdToInfoMap[threadID] = event;
 }
 
 void DebugEventHandlersManager::ExitThreadDebugEventHandler(const EXIT_THREAD_DEBUG_INFO& event, ThreadID_t threadID) {
-	std::wcout << "The thread " << std::dec << threadID << " exited with code " <<std::hex << event.dwExitCode << std::endl;
+	this->debuggerCore.CreateDebuggerMessage(ThreadExitMessage{ threadID, event.dwExitCode });
 }
 
 void DebugEventHandlersManager::DllLoadDebugEventHandler(const LOAD_DLL_DEBUG_INFO& event) {
@@ -88,30 +101,34 @@ void DebugEventHandlersManager::DllLoadDebugEventHandler(const LOAD_DLL_DEBUG_IN
 					NULL, sourceFileInfo->GetSourceFilePath().c_str(), &EnumLinesProc, &sourceFileInfo);
 		}
 	}
+
+	this->debuggerCore.CreateDebuggerMessage(LoadDllMessage{ dllName, event.lpBaseOfDll });
 }
 
 void DebugEventHandlersManager::UnLoadDllDebugEventHandler(const UNLOAD_DLL_DEBUG_INFO& event) {
 	if (!SymUnloadModule64(this->createProcessInfo.hProcess, (DWORD64)event.lpBaseOfDll))
 		CreateRunTimeError(GetLastErrorMessage());
+	this->debuggerCore.CreateDebuggerMessage(UnLoadDllMessage{ this->baseOfDllToNameMap[event.lpBaseOfDll] });
 }
 
 void DebugEventHandlersManager::ExitProcessDebugEventHandler(const EXIT_PROCESS_DEBUG_INFO& event) {
 	if (!SymUnloadModule64(this->createProcessInfo.hProcess, (DWORD64)this->createProcessInfo.lpBaseOfImage))
 		CreateRunTimeError(GetLastErrorMessage());
+	this->debuggerCore.CreateDebuggerMessage(ProcessExitMessage{ event.dwExitCode });
 }
 
 void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG_INFO& event, DWORD& continueStatus) {
 	//the kernel always send break point event when creating the process
 	//this variable is used to indicate whether it already has happend
 	static bool firstBreakPointAlreadyHit = false;
+	auto threadHandle = GetThreadHandleByID(this->m_debugEventController.GetCurrentThreadID());
+	auto threadContext = GetContext(threadHandle.getHandle());
 
 	if (event.ExceptionRecord.ExceptionCode == STATUS_BREAKPOINT) {
 		if (firstBreakPointAlreadyHit) {
-
-			auto threadHandle = GetThreadHandleByID(this->m_debugEventController.GetCurrentThreadID());
 			RevertRipAfterBreakPointException(threadHandle.getHandle(), this->m_instructionModifier);
-			auto threadContext = GetContext(threadHandle.getHandle());
 			this->revertedBreakPoint = (InstructionAddress_t)threadContext.Rip; // sets the current rip to break point to examine
+			this->debuggerCore.CreateDebuggerMessage(BreakPointMessage{ LineInfo{this->createProcessInfo.hProcess, (DWORD64)this->revertedBreakPoint.value()} });
 			continueStatus = this->HandleSingleStepping();
 		}
 		else {
@@ -124,6 +141,8 @@ void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG
 		continueStatus = this->HandleSingleStepping();
 	}
 	else {
+		this->debuggerCore.CreateDebuggerMessage(ExceptionMessage{ 
+			LineInfo{this->createProcessInfo.hProcess, (DWORD64)threadContext.Rip}, event.ExceptionRecord.ExceptionCode });
 		continueStatus = DBG_EXCEPTION_NOT_HANDLED;
 	}
 }
@@ -136,6 +155,7 @@ void DebugEventHandlersManager::AddSourceFile(PSOURCEFILE sourceFileInfo) {
 void DebugEventHandlersManager::StopDebugging() {
 	TerminateProcess(this->createProcessInfo.hProcess, 0u);
 	this->m_debugEventController.StopDebugging();
+	this->debuggerCore.StopDebugging();
 }
 
 void DebugEventHandlersManager::RestoreRevertedBreakPoint() {

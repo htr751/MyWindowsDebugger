@@ -1,6 +1,6 @@
 #include"CliUtillities.h"
 
-BreakPointCommandInformation::BreakPointCommandInformation(std::string functionName, unsigned long functionLineNumber):m_functionName(functionName), m_functionLineNumber(functionLineNumber) {}
+BreakPointCommandInformation::BreakPointCommandInformation(std::string sourceFileName, unsigned long lineNumber):m_sourceFileName(sourceFileName), m_lineNumber(lineNumber) {}
 
 BreakPointCommandInformation GetBreakPointCommandInformation(const std::string& command, DebuggerCore& debuggerCore) {
 	const auto lineNumberPlace = command.find(':');
@@ -10,5 +10,5 @@ BreakPointCommandInformation GetBreakPointCommandInformation(const std::string& 
 	auto lineNumber = (lineNumberPlace == std::string::npos) ? functionInformation.symbolSourceInfo.m_lineNumber :
 		functionInformation.symbolSourceInfo.m_lineNumber + std::stoul(command.substr(lineNumberPlace + 1).c_str());
 
-	return { functionInformation.symbolName, lineNumber };
+	return { functionInformation.symbolSourceInfo.m_fileName, lineNumber };
 }

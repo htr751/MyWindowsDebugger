@@ -7,7 +7,7 @@ using DebuggerTasksContainer = std::variant<StackTraceTask, SymbolInforamtionTas
 	ContinueTask, StepIntoTask, StepOutTask, StepTask, ExitTask>;
 
 using DebuggerMessagesContainer = std::variant<OutputMessage, CreateProcessMessage, ProcessExitMessage, CreateThreadMessage,
-	ThreadExitMessage, LoadDllMessage, UnLoadDllMessage, BreakPointMessage, ExceptionMessage>;
+	ThreadExitMessage, LoadDllMessage, UnLoadDllMessage, BreakPointMessage, ExceptionMessage, StopDebuggingMessage>;
 
 //not all tasks have real respone
-using DebuggerResponse = std::variant<StackTraceTask::TaskRespone, SymbolInforamtionTask::TaskRespone, ContextInformationTask::TaskRespone, bool>;
+using DebuggerResponse = std::variant<StackTraceTask::TaskRespone, SymbolInforamtionTask::TaskRespone, ContextInformationTask::TaskRespone, std::string>;

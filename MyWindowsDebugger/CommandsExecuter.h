@@ -16,5 +16,6 @@ public:
 	bool ExecuteContinueCommand(const std::vector<std::string>& arguments);
 	bool ExecuteStepIntoCommand(const std::vector<std::string>& arguments);
 	bool ExecuteStepCommand(const std::vector<std::string>& arguments);
+	bool ExecuteStepOutCommand(const std::vector<std::string>& arguments);
 	bool ExecuteStopDebuggingCommand(const std::vector<std::string>& arguments);
 };

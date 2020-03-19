@@ -5,6 +5,7 @@
 #include"CommandParser.h"
 #include<variant>
 #include"overload.h"
+
 int main(int argc, char* argv[]) {
 	std::variant<std::string, int> m_variant{ "hello world" };
 	try {

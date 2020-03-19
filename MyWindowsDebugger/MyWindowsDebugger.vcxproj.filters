@@ -108,9 +108,6 @@
     <ClCompile Include="ProcessInfo.cpp">
       <Filter>Source Files\DebuggerModuleSource\Win32Wrappers</Filter>
     </ClCompile>
-    <ClCompile Include="CliRendering.cpp">
-      <Filter>Source Files\DebuggerModuleSource</Filter>
-    </ClCompile>
     <ClCompile Include="MyWindowsDebugger.cpp">
       <Filter>Source Files\DebuggerModuleSource</Filter>
     </ClCompile>
@@ -159,6 +156,9 @@
     <ClCompile Include="unique_handle.cpp">
       <Filter>Source Files\DebuggerModuleSource\DebuggerUtillitisSource</Filter>
     </ClCompile>
+    <ClCompile Include="CliRendering.cpp">
+      <Filter>Source Files\CliModuleSource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wException.h">
@@ -204,9 +204,6 @@
       <Filter>Header Files\DebuggerModule\DebuggerUtillities</Filter>
     </ClInclude>
     <ClInclude Include="MyWindowsDebugger.h">
-      <Filter>Header Files\DebuggerModule</Filter>
-    </ClInclude>
-    <ClInclude Include="CliRendering.h">
       <Filter>Header Files\DebuggerModule</Filter>
     </ClInclude>
     <ClInclude Include="StackWalker.h">
@@ -256,6 +253,9 @@
     </ClInclude>
     <ClInclude Include="DebuggerMessageTraits.h">
       <Filter>Header Files\DebuggerCore</Filter>
+    </ClInclude>
+    <ClInclude Include="CliRendering.h">
+      <Filter>Header Files\CliModule</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

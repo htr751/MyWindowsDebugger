@@ -1,4 +1,7 @@
 #include"FileHandle.h"
+//#define CATCH_CONFIG_MAIN
+#include<catch.hpp>
+
 
 FileHandle::FileHandle(HANDLE hfile){
 	if (this->m_handle == INVALID_HANDLE_VALUE) {
@@ -34,4 +37,9 @@ void UnitTestingForFileHandle() {
 
 	FileHandle hfile2 = CreateFile(hfile.getFullFileName().c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	std::wcout << hfile2.getFullFileName() << std::endl;
+}
+
+TEST_CASE("file handle test - check that getFullFileName works", "[file_handle]") {
+	FileHandle hfile = CreateFile(L"C:\\Users\\htr751\\Documents\\visualStudio2019Kty.txt", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	REQUIRE(hfile.getFullFileName() == L"C:\\Users\\htr751\\Documents\\visualStudio2019Kty.txt");
 }

@@ -11,6 +11,7 @@ bool DebuggerCore::CheckForTask() const noexcept { return this->hasTaskCondition
 
 void DebuggerCore::StartDebugging(const std::wstring& executableName) {
 	this->m_debuggerThread = std::thread(&DebuggerThreadEntryPoint, std::ref(*this), executableName);
+	this->m_debuggerThread.detach();
 }
 
 bool DebuggerCore::CheckForDebuggerMessage() const {

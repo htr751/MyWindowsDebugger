@@ -21,3 +21,14 @@ void emptyQueue(std::queue<Data>& queueToEmpty) {
 	while (!queueToEmpty.empty())
 		queueToEmpty.pop();
 }
+
+template<typename Data>
+std::vector<Data> createVectorFromQueue(std::queue<Data>& queue) {
+	std::vector<Data> result;
+	result.reserve(queue.size());
+	while (!queue.empty()) {
+		result.push_back(queue.front());
+		queue.pop();
+	}
+	return result;
+}

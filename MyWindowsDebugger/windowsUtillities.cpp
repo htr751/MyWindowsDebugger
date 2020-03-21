@@ -82,7 +82,25 @@ std::size_t GetModuleSize(HMODULE moduleHandler, HANDLE processHandle){
 InstructionAddress_t GetExecutableStartAddress(HMODULE moduleHandle, HANDLE processHandle) {
 	PE_Parser m_PE_Parser{ moduleHandle, processHandle };
 	IMAGE_NT_HEADERS m_Image_Headers = m_PE_Parser.GetImageFileHeaders();
-	return reinterpret_cast<InstructionAddress_t>(m_Image_Headers.OptionalHeader.ImageBase + m_Image_Headers.OptionalHeader.AddressOfEntryPoint);
+	return reinterpret_cast<InstructionAddress_t>((unsigned int)moduleHandle + (unsigned int)m_Image_Headers.OptionalHeader.AddressOfEntryPoint);
+}
+
+InstructionAddress_t GetExecutableMainFunctionAddress(HANDLE processHandle) {
+	auto symbolInfo = SymbolInfoFactory().GetSymbolInfoByName(processHandle, "main");
+	if (symbolInfo.has_value())
+		return (InstructionAddress_t)symbolInfo.value().symbolAddress;
+
+	symbolInfo = SymbolInfoFactory().GetSymbolInfoByName(processHandle, "wmain");
+	if (symbolInfo.has_value())
+		return (InstructionAddress_t)symbolInfo.value().symbolAddress;
+
+	symbolInfo = SymbolInfoFactory().GetSymbolInfoByName(processHandle, "WinMain");
+	if (symbolInfo.has_value())
+		return (InstructionAddress_t)symbolInfo.value().symbolAddress;
+
+	symbolInfo = SymbolInfoFactory().GetSymbolInfoByName(processHandle, "wWinMain");
+	if (symbolInfo.has_value())
+		return (InstructionAddress_t)symbolInfo.value().symbolAddress;
 }
 
 BOOL __stdcall EnumSourceFilesProc(PSOURCEFILE sourceFileInfo, PVOID userContext) {

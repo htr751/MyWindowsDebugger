@@ -159,6 +159,12 @@
     <ClCompile Include="CliRendering.cpp">
       <Filter>Source Files\CliModuleSource</Filter>
     </ClCompile>
+    <ClCompile Include="mainCLI.cpp">
+      <Filter>Source Files\CliModuleSource</Filter>
+    </ClCompile>
+    <ClCompile Include="tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wException.h">
@@ -255,6 +261,12 @@
       <Filter>Header Files\DebuggerCore</Filter>
     </ClInclude>
     <ClInclude Include="CliRendering.h">
+      <Filter>Header Files\CliModule</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingInterface.h">
+      <Filter>Header Files\CliModule</Filter>
+    </ClInclude>
+    <ClInclude Include="mainCLI.h">
       <Filter>Header Files\CliModule</Filter>
     </ClInclude>
   </ItemGroup>

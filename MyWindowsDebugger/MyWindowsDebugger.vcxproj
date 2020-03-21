@@ -167,6 +167,7 @@
     <ClCompile Include="FileHandle.cpp" />
     <ClCompile Include="InstructionModifier.cpp" />
     <ClCompile Include="LineInfo.cpp" />
+    <ClCompile Include="mainCLI.cpp" />
     <ClCompile Include="MyWindowsDebugger.cpp" />
     <ClCompile Include="PE_Parser.cpp" />
     <ClCompile Include="ProcessInfo.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="StackWalker.cpp" />
     <ClCompile Include="SymbolInfoFactory.cpp" />
     <ClCompile Include="TaskExecuter.cpp" />
+    <ClCompile Include="tests.cpp" />
     <ClCompile Include="unique_handle.cpp" />
     <ClCompile Include="Utillities.cpp" />
     <ClCompile Include="main.cpp" />
@@ -185,6 +187,8 @@
   <ItemGroup>
     <ClInclude Include="BreakPointNotFoundException.h" />
     <ClInclude Include="CliRendering.h" />
+    <ClInclude Include="mainCLI.h" />
+    <ClInclude Include="RenderingInterface.h" />
     <ClInclude Include="CliUtillities.h" />
     <ClInclude Include="CommandParser.h" />
     <ClInclude Include="CommandsExecuter.h" />

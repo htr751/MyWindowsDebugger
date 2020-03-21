@@ -11,7 +11,7 @@ DWORD64 SourceFileInfo::GetSourceFileBaseAddress() const noexcept {
 }
 
 void SourceFileInfo::AddLineInformation(const SourceFileInfo::SourceFileLineInfo& lineInfo) {
-	this->lineNumberToSourceFileInfoMap[lineInfo.m_lineNumber] = lineInfo;
+	this->lineNumberToSourceFileInfoMap.insert({ lineInfo.m_lineNumber, lineInfo });
 }
 
 const SourceFileInfo::SourceFileLineInfo& SourceFileInfo::GetLineInfo(DWORD lineNumber){

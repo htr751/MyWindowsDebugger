@@ -49,7 +49,7 @@ public:
 	template<typename... MessageHandlers>
 	void HandleDebuggerMessages(const overload<MessageHandlers...>& messageHandlers) {
 		this->debuggerMessagesMutex.lock();
-		std::queue debuggerMessages{ this->debuggerMessages };
+		auto debuggerMessages = createVectorFromQueue(this->debuggerMessages);
 		emptyQueue(this->debuggerMessages);
 		this->debuggerMessagesMutex.unlock();
 

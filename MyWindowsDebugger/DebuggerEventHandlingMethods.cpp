@@ -58,12 +58,12 @@ void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_D
 			"*.CPP", &EnumSourceFilesProc, this);
 		for (auto& sourceFileInfo : this->sourceFilesInfomration)
 			SymEnumLines(this->createProcessInfo.hProcess, (ULONG64)this->createProcessInfo.lpBaseOfImage,
-				NULL, sourceFileInfo->GetSourceFilePath().c_str(), &EnumLinesProc, &sourceFileInfo);
+				NULL, sourceFileInfo->GetSourceFilePath().c_str(), &EnumLinesProc, sourceFileInfo.get());
 	}
 
 
 	//setting break point at the start address of the thread
-	InstructionAddress_t threadStartAddress = GetExecutableStartAddress((HMODULE)event.lpBaseOfImage, event.hProcess);
+	InstructionAddress_t threadStartAddress = GetExecutableMainFunctionAddress(event.hProcess);
 	ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
 
 	this->debuggerCore.CreateDebuggerMessage(CreateProcessMessage{ m_fileHandle.getFullFileName(), event.lpBaseOfImage, GetProcessId(event.hProcess) });
@@ -155,7 +155,6 @@ void DebugEventHandlersManager::AddSourceFile(PSOURCEFILE sourceFileInfo) {
 void DebugEventHandlersManager::StopDebugging() {
 	TerminateProcess(this->createProcessInfo.hProcess, 0u);
 	this->m_debugEventController.StopDebugging();
-	this->debuggerCore.StopDebugging();
 }
 
 void DebugEventHandlersManager::RestoreRevertedBreakPoint() {
@@ -183,7 +182,7 @@ DWORD DebugEventHandlersManager::HandleSingleStepping() {
 	// if there is no pending task or the pending task completed his execution(in success or in failiure)
 	// ask the user for another task to execute
 
-	while (!m_taskExecuter.HasPendingTask()) {
+	while (!m_taskExecuter.HasPendingTask() && this->m_debugEventController.NeedToContinueDebug()) {
 		auto task = this->debuggerCore.GetDebuggerTask();
 		auto executionCode = m_taskExecuter.ExecuteTask(task);
 

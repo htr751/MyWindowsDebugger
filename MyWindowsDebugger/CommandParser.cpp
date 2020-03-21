@@ -7,6 +7,7 @@
 #include"CommandsExecuter.h"
 #include<algorithm>
 #include<cassert>
+#include<catch.hpp>
 
 std::vector<std::string> TokenizeCommand(const std::string& command) {
 	std::istringstream commandStream{ command };

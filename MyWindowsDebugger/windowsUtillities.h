@@ -46,3 +46,5 @@ BOOL __stdcall EnumSourceFilesProc(PSOURCEFILE sourceFileInfo, PVOID userContext
 BOOL __stdcall EnumLinesProc(PSRCCODEINFO LineInfo, PVOID UserContext);
 
 CONTEXT GetContext(HANDLE threadHandle);
+
+InstructionAddress_t GetExecutableMainFunctionAddress(HANDLE processHandle);

@@ -40,6 +40,21 @@ TaskExecuter::ExecutionCode TaskExecuter::HandleGetSymolInformationTask(SymbolIn
 	return TaskExecuter::ExecutionCode::TASK_COMPLETION;
 }
 
+TaskExecuter::ExecutionCode TaskExecuter::HandleGetCurrentSymbolInfoTask(GetCurrentSymbolInfoTask& task)noexcept {
+	auto threadHandle = GetThreadHandleByID(this->debugInformation.m_debugEventController.GetCurrentThreadID());
+	auto threadContext = GetContext(threadHandle.getHandle());
+
+	const auto currentSymbolInfo = SymbolInfoFactory().GetSymbolInfo(this->debugInformation.createProcessInfo.hProcess,
+		threadContext.Rip);
+	if (!currentSymbolInfo.has_value()) {
+		task.CreateTaskException(std::runtime_error("couldn't get current information"));
+		return TaskExecuter::ExecutionCode::TASK_FAILED;
+	}
+
+	task.setTaskData(currentSymbolInfo.value());
+	return TaskExecuter::ExecutionCode::TASK_COMPLETION;
+}
+
 TaskExecuter::ExecutionCode TaskExecuter::HandleGetContextTask(ContextInformationTask& task)noexcept {
 	auto threadHandle = GetThreadHandleByID(this->debugInformation.m_debugEventController.GetCurrentThreadID());
 	try {
@@ -108,7 +123,7 @@ TaskExecuter::ExecutionCode TaskExecuter::HandleStepTask(StepTask& task) noexcep
 		auto currentFunctionInformation = SymbolInfoFactory().GetSymbolInfo(
 			this->debugInformation.createProcessInfo.hProcess, threadContext.Rip);
 
-		if (currentFunctionInformation.has_value()) {
+		if (!currentFunctionInformation.has_value()) {
 			task.CreateTaskException(std::runtime_error("couldn't complete operation"));
 			return TaskExecuter::ExecutionCode::TASK_FAILED;
 		}
@@ -120,9 +135,10 @@ TaskExecuter::ExecutionCode TaskExecuter::HandleStepTask(StepTask& task) noexcep
 		auto currentFunctionInformation = SymbolInfoFactory().GetSymbolInfo(
 			this->debugInformation.createProcessInfo.hProcess, threadContext.Rip);
 
-		if (currentFunctionInformation.has_value()) {
-			task.CreateTaskException(std::runtime_error("couldn't complete operation"));
-			return TaskExecuter::ExecutionCode::TASK_FAILED;
+		if (!currentFunctionInformation.has_value()) {
+			threadContext.EFlags |= 0x100;
+			SetThreadContext(threadHandle.getHandle(), &threadContext);
+			return TaskExecuter::ExecutionCode::CONTINUE_DEBUG;
 		}
 
 		//in case the debugee execute new function, initiate sub task of step out task
@@ -138,7 +154,7 @@ TaskExecuter::ExecutionCode TaskExecuter::HandleStepTask(StepTask& task) noexcep
 		LineInfo currentLineInformation{ this->debugInformation.createProcessInfo.hProcess, threadContext.Rip };
 		if (this->currentTaskState->currentLine.m_lineNumber != currentLineInformation.m_lineNumber) {
 			task.setTaskData(true);
-			return TaskExecuter::ExecutionCode::TASK_COMPLETION_CONTINUE_EXECUTION;
+			return TaskExecuter::ExecutionCode::TASK_COMPLETION;
 		}
 	}
 	//this flags sets exeuction so execution will be stopped in the next instruction
@@ -173,7 +189,7 @@ TaskExecuter::ExecutionCode TaskExecuter::HandleStepOutTask(StepOutTask& task) n
 		}
 		try {
 			ChangeInstructionToBreakPoint(this->debugInformation.m_instructionModifier,
-				(InstructionAddress_t)currentStackFrame.value().AddrPC.Offset);
+				(InstructionAddress_t)currentStackFrame.value().AddrReturn.Offset);
 			return TaskExecuter::ExecutionCode::CONTINUE_DEBUG;
 		}
 		catch (...) { task.CreateTaskException(std::runtime_error("couldn't complete operation")); return TaskExecuter::ExecutionCode::TASK_FAILED; }
@@ -201,8 +217,9 @@ TaskExecuter::ExecutionCode TaskExecuter::HandleStepIntoTask(StepIntoTask& task)
 	auto currentFunctionInformation = SymbolInfoFactory().GetSymbolInfo(
 		this->debugInformation.createProcessInfo.hProcess, threadContext.Rip);
 	if (!currentFunctionInformation.has_value()) {
-		task.CreateTaskException(std::runtime_error("couldn't complete operation"));
-		return TaskExecuter::ExecutionCode::TASK_FAILED;
+		threadContext.EFlags |= 0x100; // stop instruction execution after execution next instruction in the debuggee
+		SetThreadContext(threadHandle.getHandle(), &threadContext);
+		return TaskExecuter::ExecutionCode::CONTINUE_DEBUG;
 	}
 
 	LineInfo currentLineInformation{ this->debugInformation.createProcessInfo.hProcess, threadContext.Rip };
@@ -257,6 +274,9 @@ TaskExecuter::ExecutionCode TaskExecuter::HandleTask(DebuggerTasksContainer* tas
 			}, 
 			[this, &executionCode](ExitTask& task) {
 				executionCode = HandleExitDebuggerTask(task);
+			},
+			[this, &executionCode](GetCurrentSymbolInfoTask& task) {
+				executionCode = HandleGetCurrentSymbolInfoTask(task);
 			}
 		}, *task);
 	return executionCode;
@@ -264,7 +284,6 @@ TaskExecuter::ExecutionCode TaskExecuter::HandleTask(DebuggerTasksContainer* tas
 
 TaskExecuter::ExecutionCode TaskExecuter::ExecuteTask(std::shared_ptr<DebuggerTasksContainer> task) {
 	this->currentTask = task;
-	this->currentTaskState.reset();
 	while (true) {
 		TaskExecuter::ExecutionCode executionCode = HandleTask(this->currentTask.get());
 		if (executionCode == TaskExecuter::ExecutionCode::TASK_COMPLETION && !this->tasksToExecute.empty()) {

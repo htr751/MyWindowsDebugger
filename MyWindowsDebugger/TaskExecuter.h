@@ -46,4 +46,5 @@ private:
 	ExecutionCode HandleStepOutTask(StepOutTask& task) noexcept;
 	ExecutionCode HandleStepIntoTask(StepIntoTask& task) noexcept;
 	ExecutionCode HandleExitDebuggerTask(ExitTask& task) noexcept;
+	ExecutionCode HandleGetCurrentSymbolInfoTask(GetCurrentSymbolInfoTask& task)noexcept;
 };

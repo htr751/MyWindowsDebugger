@@ -10,6 +10,7 @@ public:
 	CommandsExecuter(DebuggerCore& debuggerCore)noexcept;
 	StackTraceData ExecuteStackTraceCommand(const std::vector<std::string>& arguments);
 	SymbolInfoFactory::SymbolInfo ExecuteGetSymbolInformationCommand(const std::vector<std::string>& arguments);
+	SymbolInfoFactory::SymbolInfo ExecuteGetCurrentInfoCommand(const std::vector<std::string>& arguments);
 	CONTEXT ExecuteGetContextCommand(const std::vector<std::string>& arguments);
 	bool ExecuteSetBreakPointCommand(const std::vector<std::string>& arguments);
 	bool ExecuteRemoveBreakPointCommand(const std::vector<std::string>& arguments);

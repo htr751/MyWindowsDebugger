@@ -25,7 +25,8 @@ DebuggerResponse executeCommand(DebuggerCore& debuggerCore, const std::vector<st
 
 	CommandsExecuter executer{ debuggerCore };
 	const auto& commandName = command[0];
-	std::vector<std::string> commandParameters{ command.size() - 1 };
+	std::vector<std::string> commandParameters;
+	commandParameters.reserve(command.size() - 1);
 	std::for_each(++command.begin(), command.end(), [&commandParameters](const auto& parameter) {commandParameters.push_back(parameter); });
 
 	if (commandName == "breakPoint") {
@@ -44,6 +45,8 @@ DebuggerResponse executeCommand(DebuggerCore& debuggerCore, const std::vector<st
 		return executer.ExecuteGetSymbolInformationCommand(commandParameters);
 	if (commandName == "getContext")
 		return executer.ExecuteGetContextCommand(commandParameters);
+	if (commandName == "getCurrentInfo")
+		return executer.ExecuteGetCurrentInfoCommand(commandParameters);
 	if (commandName == "continue") {
 		if (!executer.ExecuteContinueCommand(commandParameters))
 			CreateRunTimeError(L"unknown error accourd");

@@ -63,7 +63,8 @@ void DebugEventHandlersManager::CreateProcessEventHandler(const CREATE_PROCESS_D
 
 
 	//setting break point at the start address of the thread
-	InstructionAddress_t threadStartAddress = GetExecutableMainFunctionAddress(event.hProcess);
+	InstructionAddress_t threadStartAddress = this->GetDebuggeeStartAddress();
+
 	ChangeInstructionToBreakPoint(this->m_instructionModifier, threadStartAddress);
 
 	this->debuggerCore.CreateDebuggerMessage(CreateProcessMessage{ m_fileHandle.getFullFileName(), event.lpBaseOfImage, GetProcessId(event.hProcess) });
@@ -127,7 +128,7 @@ void DebugEventHandlersManager::ExceptionDebugEventHandler(const EXCEPTION_DEBUG
 	if (event.ExceptionRecord.ExceptionCode == STATUS_BREAKPOINT) {
 		if (firstBreakPointAlreadyHit) {
 			RevertRipAfterBreakPointException(threadHandle.getHandle(), this->m_instructionModifier);
-			this->revertedBreakPoint = (InstructionAddress_t)threadContext.Rip; // sets the current rip to break point to examine
+			this->revertedBreakPoint = (InstructionAddress_t)threadContext.Rip; // sets the current rip to break point to examin
 			this->debuggerCore.CreateDebuggerMessage(BreakPointMessage{ LineInfo{this->createProcessInfo.hProcess, (DWORD64)this->revertedBreakPoint.value()} });
 			continueStatus = this->HandleSingleStepping();
 		}
@@ -191,4 +192,22 @@ DWORD DebugEventHandlersManager::HandleSingleStepping() {
 			return DBG_CONTINUE;
 	}
 	return DBG_CONTINUE;
+}
+
+InstructionAddress_t DebugEventHandlersManager::GetDebuggeeStartAddress() const {
+	InstructionAddress_t threadStartAddress = GetExecutableMainFunctionAddress(this->createProcessInfo.hProcess);
+	auto mainFunctionSymbol  = SymbolInfoFactory().GetSymbolInfo(this->createProcessInfo.hProcess, (DWORD64)threadStartAddress );
+	if (!mainFunctionSymbol.has_value())
+		CreateRunTimeError(L"couldn't get symbol information");
+	for (const auto& sourceFileInfo : this->sourceFilesInfomration) {
+		if (sourceFileInfo->GetSourceFilePath() == mainFunctionSymbol.value().symbolSourceInfo.m_fileName) {
+			auto sortedLinesInfo = sourceFileInfo->GetSortedLineInfo([](auto& leftLine, auto& rightLine) {return leftLine.m_lineNumber < rightLine.m_lineNumber; });
+			auto requiredLineIterator = std::find_if(sortedLinesInfo.begin(), sortedLinesInfo.end(),
+				[&mainFunctionSymbol](const auto& lineInfo) {return lineInfo.m_lineNumber > mainFunctionSymbol.value().symbolSourceInfo.m_lineNumber; });
+			if (requiredLineIterator == sortedLinesInfo.end()) {
+				return (InstructionAddress_t)(mainFunctionSymbol.value().symbolAddress + 42);
+			}
+			return (InstructionAddress_t)requiredLineIterator->m_lineAddress;
+		}
+	}
 }

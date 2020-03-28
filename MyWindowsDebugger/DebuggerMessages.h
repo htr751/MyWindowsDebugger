@@ -97,9 +97,9 @@ struct ProcessExitMessage {
 struct StopDebuggingMessage {};
 
 struct BreakPointMessage {
-	LineInfo breakPointLine;
+	LineInfo m_breakPointLine;
 
-	BreakPointMessage(LineInfo breakPointInfo) : breakPointLine(std::move(breakPointLine)) {}
+	BreakPointMessage(LineInfo breakPointInfo) : m_breakPointLine(std::move(breakPointInfo)) {}
 	BreakPointMessage() = delete;
 	BreakPointMessage(const BreakPointMessage&) = default;
 	BreakPointMessage(BreakPointMessage&&) = default;

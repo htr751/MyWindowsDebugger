@@ -20,7 +20,7 @@ void mainCLI(DebuggerCore& debuggerCore) noexcept{
 		if (!continueDebug)
 			break;
 		std::string command;
-		std::cout << ">>";
+		std::cout << ">> ";
 		std::getline(std::cin, command);
 		try {
 			auto respone = executeCommand(debuggerCore, TokenizeCommand(command));

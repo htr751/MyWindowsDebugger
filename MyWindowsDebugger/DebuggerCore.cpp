@@ -29,6 +29,10 @@ SymbolInfoFactory::SymbolInfo DebuggerCore::GetSymbolInformation(const std::stri
 	return this->CreateDebuggerTask(SymbolInforamtionTask(symbolName));
 }
 
+SymbolInfoFactory::SymbolInfo DebuggerCore::GetCurrentSymbolInformation() {
+	return this->CreateDebuggerTask(GetCurrentSymbolInfoTask{});
+}
+
 CONTEXT DebuggerCore::GetContext() {
 	return this->CreateDebuggerTask(ContextInformationTask());
 }
@@ -64,4 +68,5 @@ bool DebuggerCore::StepOut() {
 void DebuggerCore::FinishHandleTask() noexcept {
 	std::lock_guard conditonLock{ this->conditionMutex };
 	this->hasTaskCondition = false;
+	this->hasTaskVariable.notify_one();
 }

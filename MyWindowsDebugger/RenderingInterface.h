@@ -11,6 +11,7 @@ public:
 	virtual void RenderCpuRegisters(const CONTEXT& renderedContext) = 0;
 	virtual void RenderSymbolInformation(const SymbolInfoFactory::SymbolInfo& symbolInfo) = 0;
 	virtual void RenderStackTraceInformation(const StackTraceData& stackTrace) = 0;
+	virtual void RenderCurrentInformation(const SymbolInfoFactory::SymbolInfo& symbolInfo) = 0;
 	virtual void RenderDebuggerMessage(const OutputMessage& message) = 0;
 	virtual void RenderDebuggerMessage(const CreateProcessMessage& message) = 0;
 	virtual void RenderDebuggerMessage(const CreateThreadMessage& message) = 0;

@@ -15,6 +15,12 @@ SymbolInfoFactory::SymbolInfo CommandsExecuter::ExecuteGetSymbolInformationComma
 	return this->m_debuggerCore.GetSymbolInformation(arguments[0]);
 }
 
+SymbolInfoFactory::SymbolInfo CommandsExecuter::ExecuteGetCurrentInfoCommand(const std::vector<std::string>& arguments) {
+	if (!arguments.empty())
+		CreateRunTimeError(L"getCurrentInfo command shouldn't have arguments");
+	return this->m_debuggerCore.GetCurrentSymbolInformation();
+}
+
 CONTEXT CommandsExecuter::ExecuteGetContextCommand(const std::vector<std::string>& arguments) {
 	if (!arguments.empty())
 		CreateRunTimeError(L"print context command shouldn't have arguments");

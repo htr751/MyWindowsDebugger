@@ -37,6 +37,7 @@ public:
 	bool CheckForDebuggerMessage() const;
 	StackTraceData GetStackTrace();
 	SymbolInfoFactory::SymbolInfo GetSymbolInformation(const std::string& symbolName);
+	SymbolInfoFactory::SymbolInfo GetCurrentSymbolInformation();
 	CONTEXT GetContext();
 	bool SetBreakPoint(const LineInfo& lineInfo);
 	bool RemoveBreakPoint(const LineInfo& lineInfo);
@@ -82,11 +83,15 @@ private:
 		}
 		catch (std::exception & exc) {
 			//reset the task condition to notify that there is no any task
-			this->FinishHandleTask();
+			mutexGaurd.lock();
+			this->hasTaskVariable.wait(mutexGaurd, [this]() {return !this->hasTaskCondition; });
+			mutexGaurd.unlock();
 			std::rethrow_exception(std::make_exception_ptr(exc));
 		}
 		//reset the task condition to notify that there is no any task
-		this->FinishHandleTask();
+		mutexGaurd.lock();
+		this->hasTaskVariable.wait(mutexGaurd, [this]() {return !this->hasTaskCondition; });
+		mutexGaurd.unlock();
 
 		return taskRespone;
 	}

@@ -46,5 +46,7 @@ private:
 	void RestoreRevertedBreakPoint();
 	// this method handle single step event( in this cotext break point event is also single step)
 	DWORD HandleSingleStepping();
+	//get debuggee first source line address
+	InstructionAddress_t GetDebuggeeStartAddress() const;
 
 };

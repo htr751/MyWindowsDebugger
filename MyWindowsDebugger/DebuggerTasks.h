@@ -48,6 +48,8 @@ public:
 
 class ContextInformationTask : public DebuggerTask<CONTEXT, ContextInformationTask> {};
 
+class GetCurrentSymbolInfoTask : public DebuggerTask<SymbolInfoFactory::SymbolInfo, GetCurrentSymbolInfoTask> {};
+
 //The bool type for respone wont be used. instead if an error accoured in the debugger thread
 //while trying to execute the task, he will inform us about it via set_excepetion on the promise of the task
 class SetBreakPointTask : public DebuggerTask<bool, SetBreakPointTask> {

@@ -32,6 +32,13 @@ void CliRendering::RenderSymbolInformation(const SymbolInfoFactory::SymbolInfo& 
 
 }
 
+void CliRendering::RenderCurrentInformation(const SymbolInfoFactory::SymbolInfo& symbolInfo) {
+	m_woutput << "debuggee is currently at address " << std::setfill(L'0') << std::setw(16) << std::hex << symbolInfo.symbolAddress << std::endl;
+	m_woutput << "this address resides in function " << stringTowstring(symbolInfo.symbolName) << std::endl;
+	m_woutput << "this function is defined at source file " << stringTowstring(symbolInfo.symbolSourceInfo.m_fileName) << ":" 
+		<< std::dec << symbolInfo.symbolSourceInfo.m_lineNumber << std::endl;
+}
+
 void CliRendering::RenderStackTraceInformation(const StackTraceData& stackTrace) {
 	for (const auto& stackFrame : stackTrace.stackTrace) 
 		m_woutput << "at " << stringTowstring(stackFrame.symbolName) << "( " << stringTowstring(stackFrame.symbolSourceInfo.m_fileName) << ":" <<
@@ -50,23 +57,23 @@ void CliRendering::RenderDebuggerMessage(const CreateProcessMessage& message) {
 		[this, &message](const std::string& imageName) {
 			this->m_woutput << L"new process created with id: " << message.processID << std::endl;
 			this->m_woutput << L"process image is: " << stringTowstring(imageName) << std::endl;
-			this->m_woutput << L"process load address is: " << message.loadAddress << std::endl;
+			this->m_woutput << L"process load address is: " << std::setfill(L'0') << std::setw(16) << std::hex << message.loadAddress << std::endl;
 		},
 		[this, &message](const std::wstring& imageName) {
 			this->m_woutput << L"new process created with id: " << message.processID << std::endl;
 			this->m_woutput << L"process image is: " << imageName << std::endl;
-			this->m_woutput << L"process load address is: " << message.loadAddress << std::endl;
+			this->m_woutput << L"process load address is: " << std::setfill(L'0') << std::setw(16) << std::hex << message.loadAddress << std::endl;
 		}
 		}, message.imageName);
 }
 
 void CliRendering::RenderDebuggerMessage(const CreateThreadMessage& message) {
 	this->m_woutput << "new thread created with id: " << message.threadID << std::endl;
-	this->m_woutput << "this thread start address is: " << message.startAddress << std::endl;
+	this->m_woutput << "this thread start address is: " << std::setfill(L'0') << std::setw(16) << std::hex << message.startAddress << std::endl;
 }
 
 void CliRendering::RenderDebuggerMessage(const LoadDllMessage& message) {
-	this->m_woutput << "new dll loaded ad address " << message.loadAddress << std::endl;
+	this->m_woutput << "new dll loaded ad address " << std::setfill(L'0') << std::setw(16) << std::hex << message.loadAddress << std::endl;
 	this->m_woutput << "dll name is: " << message.dllName << std::endl;
 }
 
@@ -87,8 +94,8 @@ void CliRendering::RenderDebuggerMessage(const StopDebuggingMessage& message) {
 }
 
 void CliRendering::RenderDebuggerMessage(const BreakPointMessage& message) {
-	this->m_woutput << L"debuggee encoutred a break point in " << stringTowstring(message.breakPointLine.m_fileName)
-		<< ":" << message.breakPointLine.m_lineNumber << std::endl;
+	this->m_woutput << L"debuggee encoutred a break point in " << stringTowstring(message.m_breakPointLine.m_fileName)
+		<< ":" << message.m_breakPointLine.m_lineNumber << std::endl;
 }
 
 void CliRendering::RenderDebuggerMessage(const ExceptionMessage& message) {

@@ -15,6 +15,7 @@ public:
 	void RenderCpuRegisters(const CONTEXT& renderedContext) override final;
 	void RenderSymbolInformation(const SymbolInfoFactory::SymbolInfo& symbolInfo) override final;
 	void RenderStackTraceInformation(const StackTraceData& stackTrace) override final;
+	void RenderCurrentInformation(const SymbolInfoFactory::SymbolInfo& symbolInfo) override final;
 	void RenderDebuggerMessage(const OutputMessage& message) override final;
 	void RenderDebuggerMessage(const CreateProcessMessage& message) override final;
 	void RenderDebuggerMessage(const CreateThreadMessage& message) override final;

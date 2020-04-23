@@ -10,12 +10,13 @@
 #include"wRunTimeException.h"
 #include"DebuggerEventHandlingMethods.h"
 #include"windowsUtillities.h"
+#include"MyWindowsDebugger.h"
+#include"DebuggerCore.h"
 
-int main(int argc, char** argv)
-{
-    ProcessInfo processInformation{ L"C:\\Users\\htr751\\Documents\\C++ Projects\\DebuggingAssistent\\x64\\Debug\\DebuggingAssistent.exe" };
+int DebuggerThreadEntryPoint(DebuggerCore& debuggerCore, std::wstring executableName) {
+    ProcessInfo processInformation{ executableName };
     DebugEventController debugLoopEventController;
-    DebugEventHandlersManager debugEventManager{ processInformation.processInfo.hProcess, debugLoopEventController };
+    DebugEventHandlersManager debugEventManager{ processInformation.processInfo.hProcess, debugLoopEventController, debuggerCore};
 
     bool continueDebugging = true;
     DWORD continueStatus = DBG_CONTINUE;
@@ -33,12 +34,15 @@ int main(int argc, char** argv)
                     [&debugEventManager](const UNLOAD_DLL_DEBUG_INFO& event) {debugEventManager.UnLoadDllDebugEventHandler(event); },
                     [&debugEventManager](const RIP_INFO& event) {}
                 });
+            if (!debugLoopEventController.NeedToContinueDebug())
+                break;
             debugLoopEventController.ContinueDebugee(continueStatus);
         }
-        catch (const wRunTimeException& err) {
-            std::wcout << err.what() << std::endl;
+        catch (const wRunTimeException&) {
+            debuggerCore.CreateDebuggerMessage(StopDebuggingMessage{});
             return 0;
         }
     }
+    debuggerCore.CreateDebuggerMessage(StopDebuggingMessage{});
     return 0;
 }

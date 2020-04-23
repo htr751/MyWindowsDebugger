@@ -6,9 +6,11 @@
 #include<iostream>
 #include<functional>
 #include<Psapi.h>
+#include<DbgHelp.h>
 #include"wLogicException.h"
 #include"wRunTimeException.h"
 #include"InstructionModifier.h"
+#include"unique_handle.h"
 
 using ThreadID_t = DWORD;
 using ThreadInfo_t = CREATE_THREAD_DEBUG_INFO;
@@ -17,16 +19,11 @@ using PointerToBaseOfDLL_t = LPVOID;
 
 std::optional<std::wstring> GetLastErrorMessage()noexcept;
 
-//throws runtime error  with message as its message
-void CreateRunTimeError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage = std::wstring(L"unknown error type"));
-
-//throws logic error with message as its message
-void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage = std::wstring(L"unknown error type"));
-void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, InstructionModifier::InstructionAddress_t instructionAddr);
-InstructionModifier::InstructionAddress_t GetThreadStartAddress(HANDLE pHandle, HANDLE tHandle);
+void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, InstructionAddress_t instructionAddr);
+InstructionAddress_t GetExecutableStartAddress(HMODULE moduleHandle, HANDLE processHandle);
 void RevertRipAfterBreakPointException(HANDLE hThread, InstructionModifier& instructionModifier);
 
-HANDLE GetThreadHandleByID(DWORD threadID);
+unique_handle GetThreadHandleByID(DWORD threadID);
 
 //this function uses render func callback to render all cpu registers
 template<typename RenderFunction>
@@ -44,3 +41,10 @@ void DisplayCpuRegisters(HANDLE hThread, RenderFunction&& renderFunc) {
 MODULEINFO GetModuleInfo(HANDLE processHandle, HMODULE module);
 struct _IMAGEHLP_MODULE64 LoadModuleSymbols(HANDLE processHandle, HANDLE fileHandle, PCSTR imageName, DWORD64 baseOfImage, DWORD64 sizeOfImage);
 std::size_t GetModuleSize(HMODULE moduleHandler, HANDLE processHandle);
+
+BOOL __stdcall EnumSourceFilesProc(PSOURCEFILE sourceFileInfo, PVOID userContext);
+BOOL __stdcall EnumLinesProc(PSRCCODEINFO LineInfo, PVOID UserContext);
+
+CONTEXT GetContext(HANDLE threadHandle);
+
+InstructionAddress_t GetExecutableMainFunctionAddress(HANDLE processHandle);

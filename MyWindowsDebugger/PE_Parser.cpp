@@ -1,6 +1,9 @@
 #include"PE_Parser.h"
 #include<memory>
 #include"windowsUtillities.h"
+#include<iostream>
+#include"Utillities.h"
+
 static constexpr std::size_t SIZEOF_DOS_HEADER = sizeof(IMAGE_DOS_HEADER);
 static constexpr std::size_t SIZEOF_NT_HEADERS = sizeof(IMAGE_NT_HEADERS);
 
@@ -21,7 +24,7 @@ IMAGE_NT_HEADERS PE_Parser::GetImageFileHeaders()const {
 	IMAGE_NT_HEADERS m_Headers = { 0 };
 	std::size_t numberOfBytesRead = 0;
 
-	bool err = ReadProcessMemory(this->m_processHandle, this->m_loadAddress, &m_Headers, SIZEOF_NT_HEADERS, &numberOfBytesRead);
+	bool err = ReadProcessMemory(this->m_processHandle, (LPCVOID)((DWORD64)this->m_loadAddress + m_DOS_Header.e_lfanew), &m_Headers, SIZEOF_NT_HEADERS, &numberOfBytesRead);
 	if (!err || numberOfBytesRead != SIZEOF_NT_HEADERS)
 		CreateRunTimeError(GetLastErrorMessage());
 

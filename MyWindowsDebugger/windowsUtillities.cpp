@@ -2,6 +2,7 @@
 #include<DbgHelp.h>
 #include<memory>
 #include"PE_Parser.h"
+#include"DebuggerEventHandlingMethods.h"
 
 std::optional<std::wstring> GetLastErrorMessage()noexcept {
 	DWORD errorMessageId = GetLastError();
@@ -17,24 +18,7 @@ std::optional<std::wstring> GetLastErrorMessage()noexcept {
 	return message;
 }
 
-//throws runtime error  with message as its message
-void CreateRunTimeError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage) {
-	if (optionalMessage.has_value())
-		throw wRunTimeException(optionalMessage.value());
-	else
-		throw wRunTimeException(alternativeMessage);
-		
-}
-
-//throws logic error with message as its message
-void CreateLogicError(const std::optional<std::wstring>& optionalMessage, const std::wstring& alternativeMessage) {
-	if (optionalMessage.has_value())
-		throw wLogicException(optionalMessage.value());
-	else
-		throw wLogicException(alternativeMessage);
-}
-
-void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, InstructionModifier::InstructionAddress_t instructionAddr) {
+void ChangeInstructionToBreakPoint(InstructionModifier& instructionModifier, InstructionAddress_t instructionAddr) {
 	std::array<char, 15> changedInstruction;
 	changedInstruction.fill('\xCC');
 	instructionModifier.changeInstruction(instructionAddr, changedInstruction, 1);
@@ -54,13 +38,13 @@ void RevertRipAfterBreakPointException(HANDLE hThread, InstructionModifier& inst
 	if (!err)
 		CreateRunTimeError(GetLastErrorMessage());
 	try {
-		instructionModifier.restoreInstruction((InstructionModifier::InstructionAddress_t)threadCurrentContext.Rip);
+		instructionModifier.restoreInstruction((InstructionAddress_t)threadCurrentContext.Rip);
 	}
-	catch (const wLogicException & err) { std::wcout << err.what() << std::endl; throw err; }
+	catch (const wLogicException & err) { std::wcout << err.what() << std::endl; throw; }
 
 }
 
-HANDLE GetThreadHandleByID(DWORD threadID) {
+unique_handle GetThreadHandleByID(DWORD threadID) {
 	HANDLE tHandle = OpenThread(THREAD_ALL_ACCESS, false, threadID);
 	if (!tHandle)
 		CreateRunTimeError(GetLastErrorMessage());
@@ -93,4 +77,48 @@ std::size_t GetModuleSize(HMODULE moduleHandler, HANDLE processHandle){
 	PE_Parser m_PE_Parser{ moduleHandler, processHandle };
 	IMAGE_NT_HEADERS m_Image_Headers = m_PE_Parser.GetImageFileHeaders();
 	return m_Image_Headers.OptionalHeader.SizeOfImage;
+}
+
+InstructionAddress_t GetExecutableStartAddress(HMODULE moduleHandle, HANDLE processHandle) {
+	PE_Parser m_PE_Parser{ moduleHandle, processHandle };
+	IMAGE_NT_HEADERS m_Image_Headers = m_PE_Parser.GetImageFileHeaders();
+	return reinterpret_cast<InstructionAddress_t>((unsigned int)moduleHandle + (unsigned int)m_Image_Headers.OptionalHeader.AddressOfEntryPoint);
+}
+
+InstructionAddress_t GetExecutableMainFunctionAddress(HANDLE processHandle) {
+	auto symbolInfo = SymbolInfoFactory().GetSymbolInfoByName(processHandle, "main");
+	if (symbolInfo.has_value())
+		return (InstructionAddress_t)symbolInfo.value().symbolAddress;
+
+	symbolInfo = SymbolInfoFactory().GetSymbolInfoByName(processHandle, "wmain");
+	if (symbolInfo.has_value())
+		return (InstructionAddress_t)symbolInfo.value().symbolAddress;
+
+	symbolInfo = SymbolInfoFactory().GetSymbolInfoByName(processHandle, "WinMain");
+	if (symbolInfo.has_value())
+		return (InstructionAddress_t)symbolInfo.value().symbolAddress;
+
+	symbolInfo = SymbolInfoFactory().GetSymbolInfoByName(processHandle, "wWinMain");
+	if (symbolInfo.has_value())
+		return (InstructionAddress_t)symbolInfo.value().symbolAddress;
+}
+
+BOOL __stdcall EnumSourceFilesProc(PSOURCEFILE sourceFileInfo, PVOID userContext) {
+	DebugEventHandlersManager* debugManager = reinterpret_cast<DebugEventHandlersManager*>(userContext);
+	debugManager->AddSourceFile(sourceFileInfo);
+	return TRUE;
+}
+
+BOOL __stdcall EnumLinesProc(PSRCCODEINFO LineInfo, PVOID UserContext) {
+	SourceFileInfo* sourceFileInfo = reinterpret_cast<SourceFileInfo*>(UserContext);
+	sourceFileInfo->AddLineInformation({ LineInfo->Obj, LineInfo->LineNumber, LineInfo->Address });
+	return TRUE;
+}
+
+CONTEXT GetContext(HANDLE threadHandle) {
+	CONTEXT threadContext;
+	threadContext.ContextFlags = CONTEXT_ALL;
+	if (!GetThreadContext(threadHandle, &threadContext))
+		CreateRunTimeError(GetLastErrorMessage());
+	return threadContext;
 }

@@ -1,5 +1,6 @@
 #include"FileHandle.h"
 
+
 FileHandle::FileHandle(HANDLE hfile){
 	if (this->m_handle == INVALID_HANDLE_VALUE) {
 		this->is_valid_handle = false;
